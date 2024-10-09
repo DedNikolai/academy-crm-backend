@@ -11,6 +11,7 @@ import VerifyToken from './models/VerifyToken.js';
 import sendEmail from './utils/mailSender.js';
 import RoleModel from './models/Role.js';
 import crypto from 'crypto';
+import checkAuth from './utils/checkAuth.js';
 
 mongoose.connect(process.env.DB_URL)
     .then(() =>console.log("DB OK"))
@@ -115,7 +116,7 @@ app.post('/auth/login', async (req, res) => {
 app.get('/auth/verify/:id', async (req, res) => {
     const {token} = req.query;
     const {id} = req.params;
-    console.log(token)
+
     try {
         const verifyToken = await VerifyToken.findOne({user: id, token})
 
@@ -140,11 +141,26 @@ app.get('/auth/verify/:id', async (req, res) => {
     }
 })
 
-app.get('/auth/me', (req, res) => {
+app.get('/auth/me', checkAuth, async (req, res) => {
     try {
+       const user = await UserModel.findById(req.userId);
+
+       if (!user) {
+        return res.status(404).json({
+            message: "User not found"
+        })
+       }
+
+       const {passwordHash, verified, ...userFromDB} = user._doc;
+
+       res.status(200).json({
+           user: userFromDB,
+       })
 
     } catch(error) {
-
+        res.status(500).json({
+            message: 'Not Allow'
+        })
     }
 })
 
