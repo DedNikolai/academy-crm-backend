@@ -7,4 +7,12 @@ export const registerValidation = [
     body('password', 'Password to short').isLength({min: 5}),
     body('fullName', 'Invalid FullName').isLength({min: 3}),
     body('avatarUrl', 'Invalid AvatarUrl').optional().isURL()
-]
+];
+
+export const forgotPasswordValidation = [
+    body('email', 'Invalid Email').isEmail(),
+];
+
+export const resetPasswordValidation = [
+    body('password', 'Password to short').isLength({min: 5}),
+];

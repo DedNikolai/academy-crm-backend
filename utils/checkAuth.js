@@ -10,12 +10,12 @@ export default (req, res, next) => {
             next();
         } catch {
             return res.status(403).json({
-                message: 'Invalid Token'
+                message: 'Unauthorized'
             })
         }
     } else {
         return res.status(403).json({
-            message: 'Not Allow'
+            message: 'Unauthorized'
         })
     }
 }
