@@ -8,7 +8,6 @@ import ResetPasswordToken from '../models/ResetPassWordToken.js';
 import sendEmail from '../utils/mailSender.js';
 import RoleModel from '../models/Role.js';
 import crypto from 'crypto';
-import { response } from 'express';
 
 export const registeration = async (req, res) => {
     try {
@@ -167,7 +166,7 @@ export const forgotPassword = async (req, res) => {
         const hash = await bcrypt.hash(resetToken, salt);
         console.log(user)
         await new ResetPasswordToken({
-            user: user._doc._id,
+            user: user._id,
             token: hash,
             createdAt: Date.now(),
           }).save();

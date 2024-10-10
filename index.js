@@ -2,9 +2,9 @@ import express from 'express';
 // import path from 'path';
 import 'dotenv/config';
 import mongoose from 'mongoose';
-import {Auth} from './validations/validations.js'
+import {Auth, Post} from './validations/validations.js'
 import checkAuth from './utils/checkAuth.js';
-import {UserContoller} from './controllers/controller.js';
+import {UserContoller, PostController} from './controllers/controller.js';
 import handleValidationErros from './utils/handleValidationErros.js';
 
 mongoose.connect(process.env.DB_URL)
@@ -23,12 +23,12 @@ app.get("/", (req, res) => {
 
 
 app.post('/auth/register', Auth.registerValidation, handleValidationErros, UserContoller.registeration)
-app.post('/auth/login', UserContoller.login);
+app.post('/auth/login', Auth.loginValidation, UserContoller.login);
 app.get('/auth/verify/:id', UserContoller.verifyUser);
 app.get('/auth/me', checkAuth, UserContoller.getCurrentUser);
 app.post('/auth/forgot-password', Auth.forgotPasswordValidation, UserContoller.forgotPassword);
 app.patch('/auth/reset-password/:id', Auth.resetPasswordValidation, UserContoller.resetPassword);
-
+app.post('/posts', checkAuth, Post.createPostValidation, handleValidationErros, PostController.createPost)
 
 app.listen(port, (err) => {
     if (err) {
