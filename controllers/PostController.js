@@ -21,4 +21,15 @@ export const createPost = async (req, res) => {
         console.log(error);
         res.status(400).json({message: 'Post wasn\'t created'})
     }
+};
+
+export const getPosts = async (req, res) => {
+    try {
+        const posts = await PostModel.find({});
+
+        res.status(200).json(posts)
+    } catch(error) {
+        console.log(error);
+        res.status(500).json({message: 'Can\'t get posts'})
+    }
 }

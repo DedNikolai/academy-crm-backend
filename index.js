@@ -29,6 +29,8 @@ app.get('/auth/me', checkAuth, UserContoller.getCurrentUser);
 app.post('/auth/forgot-password', Auth.forgotPasswordValidation, UserContoller.forgotPassword);
 app.patch('/auth/reset-password/:id', Auth.resetPasswordValidation, UserContoller.resetPassword);
 app.post('/posts', checkAuth, Post.createPostValidation, handleValidationErros, PostController.createPost)
+app.get('/posts', PostController.getPosts);
+
 
 app.listen(port, (err) => {
     if (err) {
