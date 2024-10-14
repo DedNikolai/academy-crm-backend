@@ -76,7 +76,8 @@ export const login = async (req, res) => {
         }
 
         const token = jwt.sign({
-            _id: user._id
+            _id: user._id,
+            roles: user._doc.roles
         }, process.env.SECRET_KEY,{expiresIn: '30d'});
 
         const {passwordHash, ...userFromDB} = user._doc;

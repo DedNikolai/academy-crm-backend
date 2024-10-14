@@ -6,7 +6,9 @@ export default (req, res, next) => {
     if (token) {
         try {
             const decoded = jwt.verify(token, process.env.SECRET_KEY);
+            const userRoles = decoded.roles;
             req.userId = decoded._id;
+            req.userRoles = userRoles
             next();
         } catch {
             return res.status(403).json({
