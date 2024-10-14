@@ -12,11 +12,6 @@ import crypto from 'crypto';
 export const registeration = async (req, res) => {
     try {
         const {fullName, password, email, avatarUrl} = req.body;
-        const erros = validationResult(req);
-
-        if(!erros.isEmpty()) {
-            return res.status(400).json(erros.array())
-        }
 
         let chekUser = await UserModel.findOne({ email: email });
 

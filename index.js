@@ -38,16 +38,16 @@ app.get("/", (req, res) => {
 
 
 app.post('/auth/register', Auth.registerValidation, handleValidationErros, UserContoller.registeration)
-app.post('/auth/login', Auth.loginValidation, UserContoller.login);
+app.post('/auth/login', Auth.loginValidation, handleValidationErros, UserContoller.login);
 app.get('/auth/verify/:id', UserContoller.verifyUser);
 app.get('/auth/me', checkAuth, UserContoller.getCurrentUser);
-app.post('/auth/forgot-password', Auth.forgotPasswordValidation, UserContoller.forgotPassword);
-app.patch('/auth/reset-password/:id', Auth.resetPasswordValidation, UserContoller.resetPassword);
+app.post('/auth/forgot-password', Auth.forgotPasswordValidation, handleValidationErros, UserContoller.forgotPassword);
+app.patch('/auth/reset-password/:id', Auth.resetPasswordValidation, handleValidationErros, UserContoller.resetPassword);
 app.post('/posts', checkAuth, checkRole('USER'), Post.createPostValidation, handleValidationErros, PostController.createPost)
 app.get('/posts', PostController.getPosts);
 app.get('/posts/:id', PostController.getOne);
 app.delete('/posts/:id', checkAuth, checkRole('USER'), PostController.removePost);
-app.patch('/posts/:id', checkAuth, checkRole('USER'), Post.updatePostValidation, PostController.updatePost);
+app.patch('/posts/:id', checkAuth, checkRole('USER'), Post.updatePostValidation, handleValidationErros, PostController.updatePost);
 app.post('/posts/upload', checkAuth, checkRole('USER'), upload.single('image'), (req, res) => {
     res.json({
         url: `/uploads/posts/${req.file.originalname}`
