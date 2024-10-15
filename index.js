@@ -8,6 +8,7 @@ import checkRole from './utils/ckeckRole.js';
 import {UserContoller, PostController} from './controllers/controller.js';
 import handleValidationErros from './utils/handleValidationErros.js';
 import multer from 'multer';
+import cors from 'cors';
 
 mongoose.connect(process.env.DB_URL)
     .then(() =>console.log("DB OK"))
@@ -27,6 +28,7 @@ const storage = multer.diskStorage({
 const upload = multer({storage});
 
 app.use(express.json());
+app.use(cors());
 app.use('/uploads', express.static('uploads'));
 const port = process.env.PORT || 8000;
 
@@ -45,6 +47,7 @@ app.post('/auth/forgot-password', Auth.forgotPasswordValidation, handleValidatio
 app.patch('/auth/reset-password/:id', Auth.resetPasswordValidation, handleValidationErros, UserContoller.resetPassword);
 app.post('/posts', checkAuth, checkRole('USER'), Post.createPostValidation, handleValidationErros, PostController.createPost)
 app.get('/posts', PostController.getPosts);
+app.get('/posts/tags', PostController.getLastTags);
 app.get('/posts/:id', PostController.getOne);
 app.delete('/posts/:id', checkAuth, checkRole('USER'), PostController.removePost);
 app.patch('/posts/:id', checkAuth, checkRole('USER'), Post.updatePostValidation, handleValidationErros, PostController.updatePost);
@@ -52,7 +55,7 @@ app.post('/posts/upload', checkAuth, checkRole('USER'), upload.single('image'), 
     res.json({
         url: `/uploads/posts/${req.file.originalname}`
     });
-})
+});
 
 
 app.listen(port, (err) => {
