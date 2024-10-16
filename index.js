@@ -46,9 +46,9 @@ app.get('/auth/me', checkAuth, UserContoller.getCurrentUser);
 app.post('/auth/forgot-password', Auth.forgotPasswordValidation, handleValidationErros, UserContoller.forgotPassword);
 app.patch('/auth/reset-password/:id', Auth.resetPasswordValidation, handleValidationErros, UserContoller.resetPassword);
 app.post('/posts', checkAuth, checkRole('USER'), Post.createPostValidation, handleValidationErros, PostController.createPost)
-app.get('/posts', PostController.getPosts);
-app.get('/posts/tags', PostController.getLastTags);
 app.get('/posts/:id', PostController.getOne);
+app.get('/posts', PostController.getPosts);
+app.get('/tags', PostController.getLastTags);
 app.delete('/posts/:id', checkAuth, checkRole('USER'), PostController.removePost);
 app.patch('/posts/:id', checkAuth, checkRole('USER'), Post.updatePostValidation, handleValidationErros, PostController.updatePost);
 app.post('/posts/upload', checkAuth, checkRole('USER'), upload.single('image'), (req, res) => {
