@@ -41,7 +41,6 @@ export const getOne = async (req, res) => {
         const post = await PostModel
             .findOneAndUpdate({_id: postId}, {$inc: {viewCount: 1}}, {new: true})
             .populate({path: 'user', select: ['_id', 'fullName', 'email']}).exec();
-        console.log('refresh')
         if (post) {
             return res.status(200).json(post)   
         } else {
