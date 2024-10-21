@@ -9,6 +9,7 @@ import {UserContoller, PostController} from './controllers/controller.js';
 import handleValidationErros from './utils/handleValidationErros.js';
 import multer from 'multer';
 import cors from 'cors';
+import fs from 'fs';
 
 mongoose.connect(process.env.DB_URL)
     .then(() =>console.log("DB OK"))
@@ -56,6 +57,34 @@ app.post('/posts/upload', checkAuth, checkRole('USER'), upload.single('image'), 
         url: `/uploads/posts/${req.file.originalname}`
     });
 });
+app.delete('/file/remove', checkAuth, checkRole('USER'), async (req, res) => {
+    try {
+        const path = req.query.path;
+        const filePath = process.env.DIRNAME + path;
+
+        fs.stat(filePath, (err, stats) => {
+            if (err) {
+              console.error(err);
+              return res.status(400).json({message: 'Cant remove file'});
+            }
+            if (!stats.isFile()) {
+                return res.status(400).json({message: 'No such file'});
+            }
+          });
+
+        await fs.unlink(filePath, err => {
+            if (err) {
+                console.log(err)
+                return res.status(400).json({message: 'error in deleting a file from uploads'})
+            } else {
+                return res.status(200).json({message: 'succesfully deleted from the uploads folder'})
+            }
+        })
+    } catch(error) {
+        console.log(error);
+        return res.status(500).json(error)
+    }
+})
 
 
 app.listen(port, (err) => {
