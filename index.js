@@ -16,13 +16,23 @@ mongoose.connect(process.env.DB_URL)
     .catch((error) => console.log("DB Error", error))
 
 const app = express();
+
 const storage = multer.diskStorage({
     destination: (_, __, cb) => {
+        try {
+        if (!fs.existsSync('uploads/posts')) {
+            fs.mkdirSync('uploads/posts', {recursive: true});
+          }
+      } catch (error) {
+        console.error(error)
+      }
         cb(null, 'uploads/posts');
     },
 
-    filename: (_, file, cb) => {
-        cb(null, file.originalname);
+    filename: (req, file, cb) => {
+        const savedFileName = Date.now() + '-' + file.originalname;
+        req.fileName = savedFileName; 
+        cb(null, savedFileName);
     },
 });
 
@@ -53,9 +63,16 @@ app.get('/tags', PostController.getLastTags);
 app.delete('/posts/:id', checkAuth, checkRole('USER'), PostController.removePost);
 app.patch('/posts/:id', checkAuth, checkRole('USER'), Post.updatePostValidation, handleValidationErros, PostController.updatePost);
 app.post('/posts/upload', checkAuth, checkRole('USER'), upload.single('image'), (req, res) => {
-    res.json({
-        url: `/uploads/posts/${req.file.originalname}`
-    });
+    try {
+        res.json({
+            url: `/uploads/posts/${req.fileName}`
+        });
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({
+        message: 'Upload Failed'
+        })
+    }
 });
 app.delete('/file/remove', checkAuth, checkRole('USER'), async (req, res) => {
     try {
