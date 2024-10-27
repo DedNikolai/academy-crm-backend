@@ -2,10 +2,10 @@ import express from 'express';
 // import path from 'path';
 import 'dotenv/config';
 import mongoose from 'mongoose';
-import {Auth, Post} from './validations/validations.js'
+import {Auth, Role} from './validations/validations.js'
 import checkAuth from './utils/checkAuth.js';
 import checkRole from './utils/ckeckRole.js';
-import {UserContoller, PostController} from './controllers/controller.js';
+import {UserContoller, RoleController} from './controllers/controller.js';
 import handleValidationErros from './utils/handleValidationErros.js';
 import multer from 'multer';
 import cors from 'cors';
@@ -50,22 +50,21 @@ app.get("/", (req, res) => {
 })
 
 
-app.post('/auth/register', Auth.registerValidation, handleValidationErros, UserContoller.registeration)
+app.post('/auth/register', checkAuth, checkRole(['OWNER']), Auth.registerValidation, handleValidationErros, UserContoller.registeration)
 app.post('/auth/login', Auth.loginValidation, handleValidationErros, UserContoller.login);
 app.get('/auth/verify/:id', UserContoller.verifyUser);
 app.get('/auth/me', checkAuth, UserContoller.getCurrentUser);
 app.post('/auth/forgot-password', Auth.forgotPasswordValidation, handleValidationErros, UserContoller.forgotPassword);
 app.patch('/auth/reset-password/:id', Auth.resetPasswordValidation, handleValidationErros, UserContoller.resetPassword);
-app.post('/posts', checkAuth, checkRole('USER'), Post.createPostValidation, handleValidationErros, PostController.createPost)
-app.get('/posts/:id', PostController.getOne);
-app.get('/posts', PostController.getPosts);
-app.get('/tags', PostController.getLastTags);
-app.delete('/posts/:id', checkAuth, checkRole('USER'), PostController.removePost);
-app.patch('/posts/:id', checkAuth, checkRole('USER'), Post.updatePostValidation, handleValidationErros, PostController.updatePost);
-app.post('/posts/upload', checkAuth, checkRole('USER'), upload.single('image'), (req, res) => {
+
+// app.post('/roles', checkAuth, checkRole(['OWNER']), Role.createRoleValidation, RoleController.createRole)
+
+// app.post('/posts', checkAuth, checkRole('USER'), Post.createPostValidation, handleValidationErros, PostController.createPost);
+
+app.post('/upload', checkAuth, checkRole(['OWNER, ADMIN']), upload.single('image'), (req, res) => {
     try {
         res.json({
-            url: `/uploads/posts/${req.fileName}`
+            url: `/uploads/${req.fileName}`
         });
     } catch (error) {
         console.log(error);
@@ -108,6 +107,5 @@ app.listen(port, (err) => {
     if (err) {
         console.log(err)
     }
-
     console.log('Start Server Ok')
 })

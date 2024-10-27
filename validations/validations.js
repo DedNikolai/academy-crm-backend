@@ -1,2 +1,2 @@
 export * as Auth from './auth.js';
-export * as Post from './post.js';
+export * as Role from './role.js';

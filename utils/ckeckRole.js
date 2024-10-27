@@ -1,6 +1,7 @@
-const checkRole = (role) => {
+const checkRole = (roles) => {
     return (req, res, next) => {
-        if (req.userRoles.includes(role)) {
+        const isAllow = roles.some(role => req.userRoles.includes(role))
+        if (isAllow) {
             next()
         } else {
             return res.status(403).json({ message: 'Unauthorized access' });

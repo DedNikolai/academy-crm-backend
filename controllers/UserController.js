@@ -11,7 +11,7 @@ import crypto from 'crypto';
 
 export const registeration = async (req, res) => {
     try {
-        const {fullName, password, email, avatarUrl} = req.body;
+        const {fullName, password, email, avatarUrl, role} = req.body;
 
         let chekUser = await UserModel.findOne({ email: email });
 
@@ -21,7 +21,11 @@ export const registeration = async (req, res) => {
 
         const salt = await bcrypt.genSalt(+process.env.BCRYPT_SALT);
         const hash = await bcrypt.hash(password, salt);
-        const userRole = await RoleModel.findOne({value: 'USER'})
+        const userRole = await RoleModel.findOne({value: role})
+
+        if (!userRole) {
+            return res.status(400).json({message: "Invalid user Role"});
+        }
     
         const doc = new UserModel({
              email,
@@ -41,7 +45,7 @@ export const registeration = async (req, res) => {
 
             const message = `${process.env.CLIENT_URL}/auth/verify/${user._id}?token=${token.token}`;
             await sendEmail(user.email, "Verify Email", message);
-            return res.status(200).json({message: 'Registration success! We sent letter to your email to confir registration'})
+            return res.status(200).json({message: 'Registration success! We sent letter to your email to confirm registration'})
         }
         
     } catch(error) {
