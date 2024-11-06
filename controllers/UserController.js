@@ -1,6 +1,5 @@
 import jwt from 'jsonwebtoken';
 import 'dotenv/config';
-import {validationResult} from 'express-validator';
 import UserModel from '../models/User.js';
 import bcrypt from 'bcrypt';
 import VerifyToken from '../models/VerifyToken.js';
@@ -59,17 +58,17 @@ export const registeration = async (req, res) => {
 export const login = async (req, res) => {
     try {
         const user = await UserModel.findOne({email: req.body.email})
-
         if (!user || !user.verified) {
             return res.status(404).json({
                 message: 'Invalid login or password'
             })
         }
+        
 
         const isValidPass = await bcrypt.compare(req.body.password, user._doc.passwordHash);
 
         if (!isValidPass) {
-            return req.status(404).json({
+            return res.status(404).json({
                 message: 'Invalid login or password'
             })
         }
@@ -189,7 +188,9 @@ export const resetPassword = async (req, res) => {
         const {password} = req.body;
         const {token} = req.query;
         const {id} = req.params;
-
+        console.log(password)
+        console.log(id)
+        console.log(token)
         const passwordResetToken = await ResetPasswordToken.findOne({user: id});
 
         if (!passwordResetToken) {
@@ -211,7 +212,7 @@ export const resetPassword = async (req, res) => {
                 return res.status(400).json({message: `Password was not updated`})
             }
             passwordResetToken.deleteOne();
-            return res.status(400).json({message: "Password was updated"});
+            return res.status(200).json({message: "Password was updated"});
         }) ;
 
     } catch(error) {
