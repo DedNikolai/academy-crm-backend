@@ -188,9 +188,7 @@ export const resetPassword = async (req, res) => {
         const {password} = req.body;
         const {token} = req.query;
         const {id} = req.params;
-        console.log(password)
-        console.log(id)
-        console.log(token)
+
         const passwordResetToken = await ResetPasswordToken.findOne({user: id});
 
         if (!passwordResetToken) {
@@ -219,6 +217,32 @@ export const resetPassword = async (req, res) => {
         console.log(error);
         res.status(500).json({
             message: 'Can\'t update password'
+        })
+    }
+}
+
+export const updateUser = async (request, response) => {
+    try {
+        const id = request.params.id;
+        const user = request.body;
+        const doc = UserModel.findById(id);
+        
+        if (!doc) {
+            return response.status(400).json("No such user for update");
+        }
+
+        UserModel.findOneAndUpdate({_id: id}, {...user}, {returnDocument: 'after'}).then(res => {
+            if (!res) {
+                return response.status(400).json("User was not  updated");
+            }
+
+            return response.status(200).json(res)
+        })        
+
+    } catch(error) {
+        console.log(error);
+        res.status(500).json({
+            message: 'Can\'t update user'
         })
     }
 }
