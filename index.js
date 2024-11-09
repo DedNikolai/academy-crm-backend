@@ -56,6 +56,7 @@ app.get('/auth/verify/:id', UserContoller.verifyUser);
 app.get('/auth/me', checkAuth, UserContoller.getCurrentUser);
 app.post('/auth/forgot-password', Auth.forgotPasswordValidation, handleValidationErros, UserContoller.forgotPassword);
 app.patch('/auth/reset-password/:id', Auth.resetPasswordValidation, handleValidationErros, UserContoller.resetPassword);
+app.post('/auth/reset-email', checkAuth, checkRole(['OWNER']) , UserContoller.resetEmail);
 
 // app.post('/roles', checkAuth, checkRole(['OWNER']), Role.createRoleValidation, RoleController.createRole)
 

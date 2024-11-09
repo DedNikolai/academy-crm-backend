@@ -1,12 +1,12 @@
 import jwt from 'jsonwebtoken';
 import 'dotenv/config';
-import {validationResult} from 'express-validator';
 import UserModel from '../models/User.js';
 import bcrypt from 'bcrypt';
 import VerifyToken from '../models/VerifyToken.js';
 import ResetPasswordToken from '../models/ResetPassWordToken.js';
 import sendEmail from '../utils/mailSender.js';
 import RoleModel from '../models/Role.js';
+import ResetEmailModel from '../models/ResetEmail.js';
 import crypto from 'crypto';
 
 export const registeration = async (req, res) => {
@@ -164,7 +164,7 @@ export const forgotPassword = async (req, res) => {
         const salt = await bcrypt.genSalt(+process.env.BCRYPT_SALT);
         const resetToken = crypto.randomBytes(16).toString("hex");
         const hash = await bcrypt.hash(resetToken, salt);
-        console.log(user)
+
         await new ResetPasswordToken({
             user: user._id,
             token: hash,
@@ -218,6 +218,40 @@ export const resetPassword = async (req, res) => {
         console.log(error);
         res.status(500).json({
             message: 'Can\'t update password'
+        })
+    }
+}
+
+
+export const resetEmail = async (request, response) => {
+    try {
+        const id = request.userId;
+        const email = request.body.email;
+        const code = Math.ceil(Math.random() * (9999 - 1000) + 1000);
+
+        const user = await UserModel.findById(id);
+
+        let reset = await ResetEmailModel.findOne({ user: user._id });
+
+        if (reset) { 
+            await reset.deleteOne()
+        };
+
+        await new ResetEmailModel({
+            user: user._id,
+            code: code.toString(),
+            email: email
+          }).save();
+
+          const message = `Code: ${code}`;
+          await sendEmail(email, "Reset Email", message);
+          return response.status(200).json({message: "Use code to confirm changes from email"});
+
+
+    } catch(error) {
+        console.log(error);
+        response.status(500).json({
+            message: 'Can\'t update email'
         })
     }
 }
