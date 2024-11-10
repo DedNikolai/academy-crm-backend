@@ -19,3 +19,9 @@ export const forgotPasswordValidation = [
 export const resetPasswordValidation = [
     body('password', 'Password to short').isLength({min: 5}),
 ];
+
+export const updateValidation = [
+    body('email', 'Invalid Email').isEmail(),
+    body('fullName', 'Invalid FullName').isLength({min: 3}),
+    body('avatarUrl', 'Invalid AvatarUrl').optional().isURL()
+];

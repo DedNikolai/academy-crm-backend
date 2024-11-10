@@ -58,6 +58,7 @@ app.post('/auth/forgot-password', Auth.forgotPasswordValidation, handleValidatio
 app.patch('/auth/reset-password/:id', Auth.resetPasswordValidation, handleValidationErros, UserContoller.resetPassword);
 app.post('/auth/reset-email', checkAuth, checkRole(['OWNER']) , UserContoller.resetEmail);
 app.post('/auth/update-email', checkAuth, checkRole(['OWNER']) , UserContoller.updateEmail);
+app.patch('/auth/update/:id', checkAuth, checkRole(['OWNER']), Auth.updateValidation, handleValidationErros, UserContoller.updateUser);
 
 // app.post('/roles', checkAuth, checkRole(['OWNER']), Role.createRoleValidation, RoleController.createRole)
 

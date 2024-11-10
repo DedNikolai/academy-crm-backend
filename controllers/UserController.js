@@ -59,17 +59,17 @@ export const registeration = async (req, res) => {
 export const login = async (req, res) => {
     try {
         const user = await UserModel.findOne({email: req.body.email})
-
         if (!user || !user.verified) {
             return res.status(404).json({
                 message: 'Invalid login or password'
             })
         }
+        
 
         const isValidPass = await bcrypt.compare(req.body.password, user._doc.passwordHash);
 
         if (!isValidPass) {
-            return req.status(404).json({
+            return res.status(404).json({
                 message: 'Invalid login or password'
             })
         }
@@ -211,7 +211,7 @@ export const resetPassword = async (req, res) => {
                 return res.status(400).json({message: `Password was not updated`})
             }
             passwordResetToken.deleteOne();
-            return res.status(400).json({message: "Password was updated"});
+            return res.status(200).json({message: "Password was updated"});
         }) ;
 
     } catch(error) {
@@ -221,7 +221,6 @@ export const resetPassword = async (req, res) => {
         })
     }
 }
-
 
 export const resetEmail = async (request, response) => {
     try {
@@ -274,12 +273,39 @@ export const updateEmail = async (request, response) => {
                 }
                 reset.deleteOne();
                 return response.status(200).json(res);
-    })
+            })
 
     } catch(error) {
         console.log(error);
         response.status(500).json({
             message: 'Can\'t update email'
+        })
+ }
+
+}
+
+export const updateUser = async (request, response) => {
+    try {
+        const id = request.params.id;
+        const user = request.body;
+        const doc = UserModel.findById(id);
+        
+        if (!doc) {
+            return response.status(400).json("No such user for update");
+        }
+
+        UserModel.findOneAndUpdate({_id: id}, {...user}, {returnDocument: 'after'}).then(res => {
+            if (!res) {
+                return response.status(400).json("User was not  updated");
+            }
+
+            return response.status(200).json(res)
+        })        
+
+    } catch(error) {
+        console.log(error);
+        res.status(500).json({
+            message: 'Can\'t update user'
         })
     }
 }
