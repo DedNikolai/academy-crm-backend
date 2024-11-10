@@ -255,3 +255,31 @@ export const resetEmail = async (request, response) => {
         })
     }
 }
+
+export const updateEmail = async (request, response) => {
+    try {
+        const id = request.userId;
+        const code = request.body.code;
+
+        const reset = await ResetEmailModel.findOne({user: id, code});
+
+        if (!reset) {
+            return response.status(400).json("Email was not updated")
+        }
+
+         UserModel.findOneAndUpdate({_id: id}, {email: reset.email}, {returnDocument: 'after'})
+            .then(res => {
+                if (!res) {
+                    return response.status(400).json({message: `Email was not updated`})
+                }
+                reset.deleteOne();
+                return response.status(200).json(res);
+    })
+
+    } catch(error) {
+        console.log(error);
+        response.status(500).json({
+            message: 'Can\'t update email'
+        })
+    }
+}
