@@ -8,10 +8,12 @@ import sendEmail from '../utils/mailSender.js';
 import RoleModel from '../models/Role.js';
 import ResetEmailModel from '../models/ResetEmail.js';
 import crypto from 'crypto';
+import { error } from 'console';
+import { response } from 'express';
 
 export const registeration = async (req, res) => {
     try {
-        const {fullName, password, email, avatarUrl, role} = req.body;
+        const {fullName, password, email, avatarUrl, roles} = req.body;
 
         let chekUser = await UserModel.findOne({ email: email });
 
@@ -21,7 +23,7 @@ export const registeration = async (req, res) => {
 
         const salt = await bcrypt.genSalt(+process.env.BCRYPT_SALT);
         const hash = await bcrypt.hash(password, salt);
-        const userRole = await RoleModel.findOne({value: role})
+        const userRole = await RoleModel.findOne({value: roles[0]})
 
         if (!userRole) {
             return res.status(400).json({message: "Invalid user Role"});
@@ -45,7 +47,7 @@ export const registeration = async (req, res) => {
 
             const message = `${process.env.CLIENT_URL}/auth/verify/${user._id}?token=${token.token}`;
             await sendEmail(user.email, "Verify Email", message);
-            return res.status(200).json({message: 'Registration success! We sent letter to your email to confirm registration'})
+            return res.status(200).json(user)
         }
         
     } catch(error) {
@@ -307,5 +309,69 @@ export const updateUser = async (request, response) => {
         res.status(500).json({
             message: 'Can\'t update user'
         })
+    }
+};
+
+export const getUsers = async (request, response) => {
+    try {
+        const {role} = request.query;
+
+        const userRole = await RoleModel.findOne({value: role})
+
+        if (!userRole) {
+            return response.status(400).json({message: "Invalid user Role"});
+        }
+
+        const users = await UserModel.find({roles: role})
+
+        if (users) {
+            return response.status(200).json(users)
+        }
+
+    } catch(error) {
+        console.log(error);
+        response.status(500).json('Can\'t get users')
+    }
+}
+
+export const getUserById = async (requst, response) => {
+    try {
+        const id = requst.params.id;
+
+        const user = await UserModel.findById(id);
+
+        if (!user) {
+            return response.status(400).json({message: 'user not found'});
+        }
+
+        return response.status(200).json(user);
+
+    } catch(error) {
+        console.log(error);
+        response.status(500).json('Can\'t get users')
+    }
+}
+
+export const deleteUser = async (request, response) => {
+    try {
+        const id = request.params.id;
+
+        const user = await UserModel.findById(id);
+
+        if (!user) {
+            return response.status(400).json('User with such id not found');
+        }
+
+        UserModel.deleteOne({_id: id}).then(res => {
+            if (res) {
+                return response.status(200).json({message: 'User was deletad'})
+            } else {
+                return response.status(400).json('User was not deleted');
+            }
+        })
+
+    } catch(error) {
+        console.log(error);
+        response.status(500).json({message: ' Cant delete user'})
     }
 }

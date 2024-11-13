@@ -59,9 +59,10 @@ app.patch('/auth/reset-password/:id', Auth.resetPasswordValidation, handleValida
 app.post('/auth/reset-email', checkAuth, checkRole(['OWNER']) , UserContoller.resetEmail);
 app.post('/auth/update-email', checkAuth, checkRole(['OWNER']) , UserContoller.updateEmail);
 app.patch('/auth/update/:id', checkAuth, checkRole(['OWNER']), Auth.updateValidation, handleValidationErros, UserContoller.updateUser);
-
+app.get('/auth/users', checkAuth, checkRole(['OWNER']), UserContoller.getUsers);
+app.get('/auth/users/:id', checkAuth, checkRole(['OWNER']), UserContoller.getUserById);
+app.delete('/auth/user/:id', checkAuth, checkRole(['OWNER']), UserContoller.deleteUser)
 // app.post('/roles', checkAuth, checkRole(['OWNER']), Role.createRoleValidation, RoleController.createRole)
-
 // app.post('/posts', checkAuth, checkRole('USER'), Post.createPostValidation, handleValidationErros, PostController.createPost);
 
 app.post('/upload', checkAuth, checkRole(['OWNER, ADMIN']), upload.single('image'), (req, res) => {
