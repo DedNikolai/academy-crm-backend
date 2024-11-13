@@ -47,7 +47,7 @@ export const registeration = async (req, res) => {
 
             const message = `${process.env.CLIENT_URL}/auth/verify/${user._id}?token=${token.token}`;
             await sendEmail(user.email, "Verify Email", message);
-            return res.status(200).json({message: 'Registration success! We sent letter to your email to confirm registration'})
+            return res.status(200).json(user)
         }
         
     } catch(error) {
@@ -349,5 +349,29 @@ export const getUserById = async (requst, response) => {
     } catch(error) {
         console.log(error);
         response.status(500).json('Can\'t get users')
+    }
+}
+
+export const deleteUser = async (request, response) => {
+    try {
+        const id = request.params.id;
+
+        const user = await UserModel.findById(id);
+
+        if (!user) {
+            return response.status(400).json('User with such id not found');
+        }
+
+        UserModel.deleteOne({_id: id}).then(res => {
+            if (res) {
+                return response.status(200).json({message: 'User was deletad'})
+            } else {
+                return response.status(400).json('User was not deleted');
+            }
+        })
+
+    } catch(error) {
+        console.log(error);
+        response.status(500).json({message: ' Cant delete user'})
     }
 }
