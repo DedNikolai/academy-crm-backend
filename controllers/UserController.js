@@ -8,8 +8,6 @@ import sendEmail from '../utils/mailSender.js';
 import RoleModel from '../models/Role.js';
 import ResetEmailModel from '../models/ResetEmail.js';
 import crypto from 'crypto';
-import { error } from 'console';
-import { response } from 'express';
 
 export const registeration = async (req, res) => {
     try {
