@@ -4,6 +4,10 @@ import 'dotenv/config';
 import mongoose from 'mongoose';
 import cors from 'cors';
 import auth from './routes/auth.js';
+import roles from './routes/role.js';
+import subject from './routes/subject.js';
+import teacher from './routes/teacher.js';
+import worktime from './routes/worktime.js';
  
 mongoose.connect(process.env.DB_URL)
     .then(() =>console.log("DB OK"))
@@ -22,9 +26,10 @@ app.get("/", (req, res) => {
 })
 
 app.use('/auth', auth);
-
-
-// app.post('/roles', checkAuth, checkRole(['OWNER']), Role.createRoleValidation, RoleController.createRole)
+app.use('/roles', roles);
+app.use('/subject', subject);
+app.use('/teacher', teacher);
+app.use('/worktime', worktime);
 
 
 app.listen(port, (err) => {
