@@ -74,5 +74,25 @@ export const deleteTeacher = async (request, response) => {
         console.log(error);
         response.status(500).json({message: 'Cant delete teacher'})
     }
+};
+
+export const getTeacherById = async (request, response) => {
+    try {
+        const id = request.params.id;
+
+        const teacher = await TeacherModel.findById(id)
+                                .populate('subjects')
+                                .populate({path: 'worktimes', select: ['_id', 'day', 'startTime', 'endTime']}).exec();;
+
+        if (teacher) {
+            return response.status(200).json(teacher);
+        } else {
+            return response.status(400).json({message: 'Teahcer not found'});
+        }
+
+    } catch(error) {
+        console.log(error);
+        response.status(500).json({message: 'Cant get teacher'})
+    }
 }
 

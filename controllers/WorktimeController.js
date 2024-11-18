@@ -28,3 +28,40 @@ export const createWorktime = async (request, response) => {
         response.status(500).json({message: 'Cant create worktime'})
     }
 };
+
+export const updateWorkTime = async (request, response) => {
+    try {
+        const id = request.params.id;
+        const data = request.body;
+
+        WorktimeModel.findOneAndUpdate({_id: id}, {...data}, {returnDocument: 'after'})
+            .then(result => {
+                if (!result) {
+                    return response.status(400).json({message: `Worktime not found`})
+                }
+
+                return response.status(200).json({message: "Worktime was updated"});
+        }) 
+
+    } catch(error) {
+        console.log(error);
+        response.status(500).json({message: 'Cant update worktime'})
+    }
+};
+
+export const deleteWorkTime = async (request, response) => {
+    try {
+        const id = request.params.id;
+
+        const deletad = await WorktimeModel.deleteOne({_id: id});
+
+        if (deletad) {
+            return response.status(200).json({message: 'Worktime was deletad'})
+        } else {
+            return response.status(400).json('Worktime was not deleted');
+        }
+    } catch(error) {
+        console.log(error);
+        response.status(500).json({message: 'Cant delete worktime'})
+    }
+}
