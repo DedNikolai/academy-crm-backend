@@ -18,13 +18,34 @@ const TeacherSchema = mongoose.Schema({
     },
 
     worktimes: {
-        type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'WorkTime' }]
+        type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'WorkTime' }],
+        default: []
     },
 
     subjects: {
-        type: [{type: mongoose.Schema.Types.ObjectId, ref: 'Subject'}]
-    }
+        type: [{type: mongoose.Schema.Types.ObjectId, ref: 'Subject'}],
+        default: []
     },
+
+    // students: {
+    //     type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Student' }],
+    //     default: []
+    // },
+
+    age: {
+        type: Number,
+    },
+
+    birthday: {
+        type: Date
+    },
+
+    education: {
+        type: String
+    }
+
+    },
+
     {
         timestamps: true
     }
