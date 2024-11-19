@@ -32,9 +32,12 @@ export const createWorktime = async (request, response) => {
 export const updateWorkTime = async (request, response) => {
     try {
         const id = request.params.id;
-        const data = request.body;
+        const {day, startTime, endTime, teacher} = request.body;
+        const start = new Date(startTime);
+        const end = new Date(endTime);
 
-        WorktimeModel.findOneAndUpdate({_id: id}, {...data}, {returnDocument: 'after'})
+        WorktimeModel.findOneAndUpdate({_id: id}, 
+            {day, teacher, startTime: start, endTime: end}, {returnDocument: 'after'})
             .then(result => {
                 if (!result) {
                     return response.status(400).json({message: `Worktime not found`})
