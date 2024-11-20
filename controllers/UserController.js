@@ -9,6 +9,7 @@ import RoleModel from '../models/Role.js';
 import ResetEmailModel from '../models/ResetEmail.js';
 import crypto from 'crypto';
 
+
 export const registeration = async (req, res) => {
     try {
         const {fullName, password, email, avatarUrl, roles} = req.body;
