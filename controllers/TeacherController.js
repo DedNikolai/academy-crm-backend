@@ -81,7 +81,6 @@ export const getTeacherById = async (request, response) => {
         const id = request.params.id;
 
         const teacher = await TeacherModel.findById(id)
-                                .populate('subjects')
                                 .populate({path: 'worktimes', select: ['_id', 'day', 'startTime', 'endTime']}).exec();;
 
         if (teacher) {
