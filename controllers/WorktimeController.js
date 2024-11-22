@@ -1,5 +1,6 @@
 import WorktimeModel from '../models/WorkTime.js';
 import TeacherModel from '../models/Teacher.js';
+import moment from 'moment-timezone';
 
 export const createWorktime = async (request, response) => {
     try {
@@ -33,17 +34,15 @@ export const updateWorkTime = async (request, response) => {
     try {
         const id = request.params.id;
         const {day, startTime, endTime, teacher} = request.body;
-        const start = new Date(startTime);
-        const end = new Date(endTime);
 
         WorktimeModel.findOneAndUpdate({_id: id}, 
-            {day, teacher, startTime: start, endTime: end}, {returnDocument: 'after'})
+            {day, teacher, startTime, endTime}, {returnDocument: 'after'})
             .then(result => {
                 if (!result) {
                     return response.status(400).json({message: `Worktime not found`})
                 }
 
-                return response.status(200).json({message: "Worktime was updated"});
+                return response.status(200).json(result);
         }) 
 
     } catch(error) {
