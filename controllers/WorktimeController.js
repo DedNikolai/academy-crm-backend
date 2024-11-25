@@ -12,9 +12,8 @@ export const createWorktime = async (request, response) => {
             const teacher = await TeacherModel.findOne({_id: data.teacher});
             if (teacher) {
                 teacher.worktimes.push(worktime._id);
-                console.log(teacher.worktimes)
                 await teacher.save();
-                return response.status(200).json({message: 'Worktime was created'})
+                return response.status(200).json(worktime)
             } else {
                 return response.status(400).json({message: 'Worktime was not added to teacher'})
             }
@@ -55,10 +54,12 @@ export const deleteWorkTime = async (request, response) => {
     try {
         const id = request.params.id;
 
+        const worktime = await WorktimeModel.findById(id);
+
         const deletad = await WorktimeModel.deleteOne({_id: id});
 
         if (deletad) {
-            return response.status(200).json({message: 'Worktime was deletad'})
+            return response.status(200).json({message: 'Worktime was deletad', teacher: worktime.teacher})
         } else {
             return response.status(400).json('Worktime was not deleted');
         }
