@@ -7,6 +7,7 @@ import handleValidationErros from '../utils/handleValidationErros.js';
 
 const router = express.Router({ mergeParams: true })
 
+// router.post('/register', Auth.registerValidation, handleValidationErros, UserContoller.registeration)
 router.post('/register', checkAuth, checkRole(['OWNER']), Auth.registerValidation, handleValidationErros, UserContoller.registeration)
 router.post('/login', Auth.loginValidation, handleValidationErros, UserContoller.login);
 router.get('/verify/:id', UserContoller.verifyUser);
