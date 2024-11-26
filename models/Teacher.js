@@ -32,10 +32,6 @@ const TeacherSchema = mongoose.Schema({
     //     default: []
     // },
 
-    age: {
-        type: Number,
-    },
-
     birthday: {
         type: Date
     },

@@ -6,6 +6,14 @@ const StudentSchema = mongoose.Schema({
         required: true
     },
 
+    birthday: {
+        type: Date
+    },
+
+    parent: {
+        type: String,
+    },
+
     email: {
         type: String,
         required: true,
@@ -18,11 +26,27 @@ const StudentSchema = mongoose.Schema({
     },
 
     subjects: {
-        type: [{type: mongoose.Schema.Types.ObjectId, ref: 'Subject'}]
+        type: [{type: String, ref: 'Subject'}],
+        required: true,
     },
 
     teachers: {
-        type: [{type: mongoose.Schema.Types.ObjectId, ref: 'Teacher'}]
+        type: [{type: mongoose.Schema.Types.ObjectId, ref: 'Teacher'}],
+        required: true,
+    },
+
+    information: {
+        type: String
+    },
+
+    isActive: {
+        type: String,
+        required: true
+    },
+
+    gender: {
+        type: String,
+        required: true
     }
     },
     {

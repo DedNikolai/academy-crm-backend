@@ -82,7 +82,7 @@ export const login = async (req, res) => {
 
         const {passwordHash, ...userFromDB} = user._doc;
 
-        res.status(200).json({
+        return res.status(200).json({
             user: userFromDB,
             token
         })
@@ -135,7 +135,7 @@ export const getCurrentUser = async (req, res) => {
 
        const {passwordHash, verified, ...userFromDB} = user._doc;
 
-       res.status(200).json({
+       return res.status(200).json({
            user: userFromDB,
        })
 
