@@ -21,19 +21,19 @@ export const createStudent = async (request, response) => {
 
 export const getStudents = async (request, response) => {
     try {
-        const {params, limit = 10, page = 1, active} = request.query;
-        const offset = (page - 1) * limit
+        const {params, limit = 10, page = 0, active} = request.query;
         const isActive = active ? active === 'true' : 'true'
         const regex = new RegExp(params, 'i')
-        const students = await StudentModel.find({fullName: {$regex: regex}, isActive})
-                                .skip(offset)
-                                .limit(limit)
-                                .populate({
-                                    path: 'teachers', 
-                                    select: ['_id', 'fullName', 'subjects']
-                                }).exec();
-
-        response.status(200).json(students);
+        const students = await StudentModel.paginate({fullName: {$regex: regex}, isActive}, {
+                                               page: +page + 1, 
+                                               limit: limit,
+                                               populate:{
+                                                path: 'teachers',
+                                                select: ['_id', 'fullName', 'subjects']
+                                               }  
+                                            });
+    
+        return response.status(200).json(students);
     } catch(error) {
         console.log(error);
         response.status(500).json({message: 'Cant get students'})

@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import mongoosePaginate  from "mongoose-paginate-v2";
 
 const StudentSchema = mongoose.Schema({
     fullName: {
@@ -17,7 +18,7 @@ const StudentSchema = mongoose.Schema({
     email: {
         type: String,
         required: true,
-        unique: true
+        // unique: true
     },
 
     phone: {
@@ -53,5 +54,7 @@ const StudentSchema = mongoose.Schema({
         timestamps: true
     }
 );
+
+StudentSchema.plugin(mongoosePaginate)
 
 export default mongoose.model('Student', StudentSchema);
