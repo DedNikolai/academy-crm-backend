@@ -40,7 +40,7 @@ const genderValidation = (gender) => {
 export const studentValidation = [
     body('fullName', 'Invalid fullName value').isString().isLength({min: 5}),
     body('birthday', 'Invalid birthday type').isString().optional(),
-    body('parent', 'Invalid birthdday type').isString().optional(),
+    body('parents', 'Invalid birthdday type').isString().optional(),
     body('email', 'Invalid email value').isEmail(),
     body('phone', 'Invalid phone value').isString(),
     body('isActive', 'Ivalid isActiveValue').isBoolean(),

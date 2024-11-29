@@ -11,7 +11,7 @@ const StudentSchema = mongoose.Schema({
         type: Date
     },
 
-    parent: {
+    parents: {
         type: String,
     },
 
