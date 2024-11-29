@@ -22,7 +22,7 @@ export const createStudent = async (request, response) => {
 export const getStudents = async (request, response) => {
     try {
         const {params, limit = 10, page = 0, active} = request.query;
-        const isActive = active ? active === 'true' : 'true'
+        const isActive = active ? active === 'true' : true
         const regex = new RegExp(params, 'i')
         const students = await StudentModel.paginate({fullName: {$regex: regex}, isActive}, {
                                                page: +page + 1, 
