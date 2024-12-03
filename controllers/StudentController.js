@@ -104,3 +104,25 @@ export const getStudentById = async (request, response) => {
     }
 }
 
+export const getStudentsByTeacher = async (request, response) => {
+    try {
+        const teacherId = request.params.id;
+        const {limit = 10, page = 0} = request.query;
+        const students = await StudentModel.paginate({teachers: teacherId}, {
+                                               page: +page + 1, 
+                                               limit: limit,
+                                               populate:{
+                                                path: 'teachers',
+                                                select: ['_id', 'fullName', 'subjects']
+                                               }  
+                                            });
+
+
+        return response.status(200).json(students);
+
+    } catch(error) {
+        console.log(error);
+        response.status(500).json({message: 'Cant get students'})
+    }
+}
+

@@ -12,5 +12,6 @@ router.get('/', checkAuth, checkRole(['OWNER', 'ADMIN']), StudentController.getS
 router.patch('/:id', checkAuth, checkRole(['OWNER', 'ADMIN']), Student.studentValidation, handleValidationErros, StudentController.updateStudent);
 router.delete('/:id', checkAuth, checkRole(['OWNER', 'ADMIN']), StudentController.deleteStudent);
 router.get('/:id', checkAuth, checkRole(['OWNER', 'ADMIN']), StudentController.getStudentById);
+router.get('/teacher/:id', checkAuth, checkRole(['OWNER', 'ADMIN']), StudentController.getStudentsByTeacher);
 
 export default router;
