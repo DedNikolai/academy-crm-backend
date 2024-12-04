@@ -24,7 +24,11 @@ export const getTeachers = async (request, response) => {
     try {
         const teachers = await TeacherModel.find({})
                                 // .populate('subjects')
-                                .populate({path: 'worktimes', select: ['_id', 'day', 'startTime', 'endTime', 'teacher']}).exec();
+                                .populate({
+                                    path: 'worktimes', 
+                                    select: ['_id', 'day', 'startTime', 'endTime', 'teacher'],
+                                    options: {sort: {sortOrder: 1}}
+                                }).exec();
         response.status(200).json(teachers);
     } catch(error) {
         console.log(error);
@@ -81,7 +85,11 @@ export const getTeacherById = async (request, response) => {
         const id = request.params.id;
 
         const teacher = await TeacherModel.findById(id)
-                                .populate({path: 'worktimes', select: ['_id', 'day', 'startTime', 'endTime', 'teacher']}).exec();;
+                                .populate({
+                                    path: 'worktimes', 
+                                    select: ['_id', 'day', 'startTime', 'endTime', 'teacher'],
+                                    options: {sort: {sortOrder: 1}}
+                                }).exec();;
 
         if (teacher) {
             return response.status(200).json(teacher);
