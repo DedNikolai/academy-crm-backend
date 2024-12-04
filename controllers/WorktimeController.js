@@ -1,11 +1,13 @@
 import WorktimeModel from '../models/WorkTime.js';
 import TeacherModel from '../models/Teacher.js';
-import moment from 'moment-timezone';
+
+const days = ['Понеділок', 'Вівторок', 'Середа', 'Четвер', "П'ятниця", "Субота", "Неділя"]
 
 export const createWorktime = async (request, response) => {
     try {
         const data = request.body;
-        const doc = new WorktimeModel({...data});
+
+        const doc = new WorktimeModel({...data, sortOrder: days.indexOf(data.day)});
         const worktime = await doc.save();
 
         if (worktime) {

@@ -16,6 +16,11 @@ const WorkTimeSchema = mongoose.Schema({
         required: true
     },
 
+    sortOrder: {
+        type: Number,
+        required: true
+    },
+
     teacher: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Teacher',

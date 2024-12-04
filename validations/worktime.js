@@ -2,9 +2,7 @@ import { body } from "express-validator";
 import TeacherModel from '../models/Teacher.js';
 
 const checkUser = async (teacherId) => {
-    console.log(teacherId)
     const isTeacher = await TeacherModel.findById(teacherId);
-    console.log(isTeacher)
     if (!isTeacher) {
         throw new Error('No such teacher');
     }

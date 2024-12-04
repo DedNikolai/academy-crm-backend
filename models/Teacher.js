@@ -14,7 +14,7 @@ const TeacherSchema = mongoose.Schema({
     email: {
         type: String,
         required: true,
-        unique: true
+        // unique: true
     },
 
     worktimes: {
@@ -31,10 +31,6 @@ const TeacherSchema = mongoose.Schema({
     //     type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Student' }],
     //     default: []
     // },
-
-    age: {
-        type: Number,
-    },
 
     birthday: {
         type: Date
