@@ -12,6 +12,6 @@ router.get('/', checkAuth, checkRole(['OWNER', 'ADMIN']), TicketController.getTi
 router.patch('/:id', checkAuth, checkRole(['OWNER', 'ADMIN']), Ticket.ticketValidation, handleValidationErros, TicketController.updateTicket);
 router.delete('/:id', checkAuth, checkRole(['OWNER', 'ADMIN']), TicketController.deleteTicket);
 router.get('/:id', checkAuth, checkRole(['OWNER', 'ADMIN']), TicketController.getTicketById);
-router.get('/student/:id', checkAuth, checkRole(['OWNER', 'ADMIN']), TicketController.getTicketByStudent);
+router.get('/student/:id', checkAuth, checkRole(['OWNER', 'ADMIN']), TicketController.getTicketsByStudent);
 
 export default router;

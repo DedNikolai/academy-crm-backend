@@ -37,7 +37,7 @@ export const ticketValidation = [
     body('endDate', 'Invalid endDate type').isString(),
     body('student').custom(studentValidation),
     body('subject', 'Invalid subject value').custom(subjectValidation),
-    body('teachers').custom(teacherValidation),
+    body('teacher').custom(teacherValidation),
     body('price', 'Invalid Price').isNumeric(),
     body('generalAmount', 'Invalid generalAmount').isNumeric(),
     body('remainAmount', 'Invalid remainAmount').isNumeric(),

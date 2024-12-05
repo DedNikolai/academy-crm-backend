@@ -86,12 +86,21 @@ export const getTicketById = async (request, response) => {
     try {
         const id = request.params.id;
 
-        const ticket = await Ticketmodel.findById(id)
+        const ticket = await Ticketmodel.findById(id)       
+                                        //   .populate({
+                                        //     path: 'teacher', 
+                                        //     select: ['_id', 'fullName', 'subjects']
+                                        //   })
                                           .populate({
-                                            path: 'teachers', 
-                                            select: ['_id', 'fullName', 'subjects']
-                                          }).exec(); 
-        if (student) {
+                                            path: 'student', 
+                                            select: ['_id', 'fullName', 'teachers', 'subjects'],
+                                            populate: {
+                                                path: 'teachers',
+                                                select: ['_id', 'fullName', 'subjects']
+                                            }
+                                          })
+                                          .exec(); 
+        if (ticket) {
             return response.status(200).json(ticket);
         } else {
             return response.status(400).json({message: 'ticket not found'});
@@ -103,7 +112,7 @@ export const getTicketById = async (request, response) => {
     }
 }
 
-export const getTicketByStudent = async (request, response) => {
+export const getTicketsByStudent = async (request, response) => {
     try {
         const studentId = request.params.id;
         const {limit = 10, page = 0} = request.query;
