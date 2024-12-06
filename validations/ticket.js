@@ -40,6 +40,6 @@ export const ticketValidation = [
     body('teacher').custom(teacherValidation),
     body('price', 'Invalid Price').isNumeric(),
     body('generalAmount', 'Invalid generalAmount').isNumeric(),
-    body('remainAmount', 'Invalid remainAmount').isNumeric(),
-    body('remainAmount', 'Invalid transferred').isNumeric().optional(),
+    body('usedAmount', 'Invalid remainAmount').isNumeric(),
+    body('transferredAmount', 'Invalid transferred').isNumeric().optional(),
 ];

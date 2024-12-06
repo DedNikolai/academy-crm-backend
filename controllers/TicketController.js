@@ -21,15 +21,19 @@ export const createTicket = async (request, response) => {
 
 export const getTickets = async (request, response) => {
     try {
-        const {params, limit = 10, page = 0} = request.query;
+        const {limit = 10, page = 0} = request.query;
 
         const tickets = await Ticketmodel.paginate({}, {
                                                page: +page + 1, 
                                                limit: limit,
                                                populate:{
-                                                path: 'teachers',
+                                                path: 'teacher',
                                                 select: ['_id', 'fullName', 'subjects']
-                                               }  
+                                               },
+                                               populate:{
+                                                path: 'student',
+                                                select: ['_id', 'fullName']
+                                               },   
                                             });
     
         return response.status(200).json(tickets);

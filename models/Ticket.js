@@ -43,7 +43,7 @@ const TicketSchema = mongoose.Schema({
         required: true,
     },
 
-    remainAmount: {
+    usedAmount: {
         type: Number,
         required: true,
     },
