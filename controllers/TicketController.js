@@ -26,6 +26,7 @@ export const getTickets = async (request, response) => {
         const tickets = await Ticketmodel.paginate({}, {
                                                page: +page + 1, 
                                                limit: limit,
+                                               sort: { createdAt: -1 },
                                                populate:{
                                                 path: 'teacher',
                                                 select: ['_id', 'fullName', 'subjects']
@@ -91,10 +92,10 @@ export const getTicketById = async (request, response) => {
         const id = request.params.id;
 
         const ticket = await Ticketmodel.findById(id)       
-                                        //   .populate({
-                                        //     path: 'teacher', 
-                                        //     select: ['_id', 'fullName', 'subjects']
-                                        //   })
+                                          .populate({
+                                            path: 'teacher', 
+                                            select: ['_id', 'fullName', 'subjects']
+                                          })
                                           .populate({
                                             path: 'student', 
                                             select: ['_id', 'fullName', 'teachers', 'subjects'],
