@@ -6,6 +6,8 @@ const checkUser = async (teacherId) => {
     if (!isTeacher) {
         throw new Error('No such teacher');
     }
+
+    return true
 }
 
 export const createWorkTimeValidation = [

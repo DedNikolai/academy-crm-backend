@@ -108,7 +108,7 @@ export const getStudentsByTeacher = async (request, response) => {
     try {
         const teacherId = request.params.id;
         const {limit = 10, page = 0} = request.query;
-        const students = await StudentModel.paginate({teachers: teacherId}, {
+        const students = await StudentModel.paginate({teachers: teacherId, isActive: true}, {
                                                page: +page + 1, 
                                                limit: limit,
                                                populate:{
