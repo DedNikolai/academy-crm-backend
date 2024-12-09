@@ -124,8 +124,9 @@ export const getTicketsByStudent = async (request, response) => {
         const tickets = await Ticketmodel.paginate({student: studentId}, {
                                                page: +page + 1, 
                                                limit: limit,
+                                               sort: { createdAt: -1 },
                                                populate:{
-                                                path: 'teachers',
+                                                path: 'teacher',
                                                 select: ['_id', 'fullName', 'subjects']
                                                }  
                                             });
