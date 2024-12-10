@@ -153,3 +153,25 @@ export const getLessonsByStudent = async (request, response) => {
     }
 }
 
+export const getLessonsByTicket = async (request, response) => {
+    try {
+        const ticketId = request.params.id;
+        const lessons = await LessonModel.find({ticket: ticketId})
+                                          .populate({
+                                            path: 'ticket',
+                                            select: ['_id', 'startDate', 'endDate', 'price', 'generalAmount', 'usedAmount', 'transferred']
+                                          })
+                                          .populate({
+                                            path: 'teacher',
+                                            select: ['_id', 'fullName', 'subjects'],
+                                          }).sort({date: 1}).exec();
+
+
+        return response.status(200).json(lessons);
+
+    } catch(error) {
+        console.log(error);
+        response.status(500).json({message: 'Cant get lessons'})
+    }
+}
+

@@ -13,5 +13,6 @@ router.patch('/:id', checkAuth, checkRole(['OWNER', 'ADMIN']), Lesson.lessonVali
 router.delete('/:id', checkAuth, checkRole(['OWNER', 'ADMIN']), LessonController.deleteLesson);
 router.get('/:id', checkAuth, checkRole(['OWNER', 'ADMIN']), LessonController.getLessonById);
 router.get('/student/:id', checkAuth, checkRole(['OWNER', 'ADMIN']), LessonController.getLessonsByStudent);
+router.get('/ticket/:id', checkAuth, checkRole(['OWNER', 'ADMIN']), LessonController.getLessonsByTicket);
 
 export default router;

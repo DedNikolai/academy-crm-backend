@@ -12,6 +12,11 @@ const LessonSchema = mongoose.Schema({
         required: true
     },
 
+    time: {
+        type: Date,
+        required: true
+    },
+
     durationMinutes: {
         type: Number,
         required: true
@@ -36,6 +41,11 @@ const LessonSchema = mongoose.Schema({
 
     subject: {
         type: String, 
+    },
+
+    status: {
+        type: String,
+        default: ''
     },
 
     ticket: {
