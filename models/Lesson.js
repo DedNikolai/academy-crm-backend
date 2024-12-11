@@ -12,10 +12,10 @@ const LessonSchema = mongoose.Schema({
         required: true
     },
 
-    time: {
-        type: Date,
-        required: true
-    },
+    // time: {
+    //     type: Date,
+    //     required: true
+    // },
 
     durationMinutes: {
         type: Number,

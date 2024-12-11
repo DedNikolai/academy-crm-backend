@@ -47,7 +47,7 @@ const ticketValidation = async (ticketId) => {
 export const lessonValidation = [
     body('day', 'Invalid day value').isString().isLength({min: 5}),
     body('date', 'Invalid date type').isString(),
-    body('time', 'Invalid date type').isString(),
+    // body('time', 'Invalid date type').isString(),
     body('durationMinutes', 'Invalid duration type').isNumeric(),
     body('teacher').custom(teacherValidation),
     body('student').custom(studentValidation),
