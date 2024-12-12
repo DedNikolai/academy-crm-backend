@@ -1,5 +1,7 @@
 import TeacherModel from '../models/Teacher.js';
 import WorkTimeModel from '../models/WorkTime.js';
+import StudentModel from '../models/Student.js';
+import LessonModel from '../models/Lesson.js';
 
 export const createTeacher = async (request, response) => {
     try {
@@ -60,6 +62,13 @@ export const deleteTeacher = async (request, response) => {
         const id = request.params.id;
 
         const teacher = await TeacherModel.findById(id);
+
+        const students = await StudentModel.find({teachers: teacher._id});
+        const lessons = await LessonModel.find({teacher: teacher._id})
+
+        if (students.length > 0) {
+            return response.status(400).json({message: 'Teacher has students'});
+        }
 
         if (!teacher) {
             return response.status(400).json('Teacher not found');

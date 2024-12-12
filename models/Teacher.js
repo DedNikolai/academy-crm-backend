@@ -27,10 +27,10 @@ const TeacherSchema = mongoose.Schema({
         default: []
     },
 
-    // students: {
-    //     type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Student' }],
-    //     default: []
-    // },
+    isActive: {
+        type: Boolean,
+        required: true
+    },
 
     birthday: {
         type: Date

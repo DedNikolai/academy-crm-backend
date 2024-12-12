@@ -43,15 +43,20 @@ const TicketSchema = mongoose.Schema({
         required: true,
     },
 
-    usedAmount: {
-        type: Number,
-        required: true,
+    lessons: {
+        type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Lesson' }],
+        default: []
     },
 
-    transferred: {
-        type: Number,
-        required: true,
-    }
+    // usedAmount: {
+    //     type: Number,
+    //     required: true,
+    // },
+
+    // transferred: {
+    //     type: Number,
+    //     required: true,
+    // }
 
     },
     {

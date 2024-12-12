@@ -57,10 +57,12 @@ export const deleteWorkTime = async (request, response) => {
         const id = request.params.id;
 
         const worktime = await WorktimeModel.findById(id);
-
+        const teacher = await TeacherModel.findById(worktime.teacher);
+        teacher.worktimes.pull(worktime._id)
         const deletad = await WorktimeModel.deleteOne({_id: id});
-
+        
         if (deletad) {
+            await teacher.save();
             return response.status(200).json({message: 'Worktime was deletad', teacher: worktime.teacher})
         } else {
             return response.status(400).json('Worktime was not deleted');
