@@ -72,13 +72,47 @@ export const updateLesson = async (request, response) => {
         const data = request.body;
         const lessonId = request.params.id;
 
+        const ticket = await Ticketmodel.findOne({_id: data.ticket})
+                                        .populate({
+                                            path: 'lessons',
+                                            select: ['_id', 'status']
+                                        });
+        
+        if (ticket) {
+
+            if (data.status === LessonStatus.TRANSFERED) {
+                const transferredAmount = ticket.lessons.filter(lesson => lesson.status === LessonStatus.TRANSFERED).length;
+                
+                const lessonFromBD = ticket.lessons.find(lesson => lesson._id.toString() === data._id);
+                
+                if (ticket.generalAmount/4 === transferredAmount && lessonFromBD.status !== LessonStatus.TRANSFERED ) {
+                    return response.status(400).json({message: 'Limit of transfered lessons qauntity'})
+                }
+            }
+
+            if (data.status !== LessonStatus.TRANSFERED) {
+                const activedAmount = ticket.lessons.filter(lesson => lesson.status !== LessonStatus.TRANSFERED).length;
+                
+                const lessonFromBD = ticket.lessons.find(lesson => lesson._id.toString() === data._id);
+                console.log(activedAmount, lessonFromBD)
+
+                if (activedAmount >= ticket.generalAmount && lessonFromBD.status === LessonStatus.TRANSFERED ) {
+                    return response.status(400).json({message: 'Limit of transfered lessons qauntity'})
+                }
+            }
+
+
+        } else {
+            return response.status(400).json({message: 'No such ticket'})
+        }
+
         LessonModel.findOneAndUpdate({_id: lessonId}, {...data}, {returnDocument: 'after'})
             .then(result => {
                 if (!result) {
                     return response.status(400).json({message: `Lesson ${lessonId} not found`})
                 }
 
-                return response.status(200).json({message: "Lessons was updated"});
+                return response.status(200).json(result);
         }) 
     } catch(error) {
         console.log(error);

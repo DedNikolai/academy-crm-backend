@@ -49,9 +49,9 @@ export const lessonValidation = [
     body('date', 'Invalid date type').isString(),
     // body('time', 'Invalid date type').isString(),
     body('durationMinutes', 'Invalid duration type').isNumeric(),
-    body('teacher').custom(teacherValidation),
-    body('student').custom(studentValidation),
+    // body('teacher').custom(teacherValidation)
+    // body('student').custom(studentValidation),
     body('subject', 'Invalid subject value').custom(subjectValidation),
     body('room', 'Invalid room type').isNumeric(),
-    body('ticket').custom(ticketValidation),
+    // body('ticket').custom(ticketValidation),
 ];
