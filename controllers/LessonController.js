@@ -40,9 +40,14 @@ export const createLesson = async (request, response) => {
 
 export const getLessons = async (request, response) => {
     try {
-        const {limit = 10, page = 0} = request.query;
-
-        const lessons = await LessonModel.paginate({}, {
+        const {limit = 10, page = 0, date = ''} = request.query;
+        const start = new Date(date);
+        // start.setHours(0,0,0,0);
+        const end = new Date(date);
+        end.setHours(24);
+        console.log(start)
+        console.log(end)
+        const lessons = await LessonModel.paginate({date}, {
                                                page: +page + 1, 
                                                limit: limit,
                                                sort: { createdAt: -1 },
