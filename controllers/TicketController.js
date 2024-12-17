@@ -1,7 +1,5 @@
-import StudentModel from '../models/Student.js';
 import Ticketmodel from '../models/Ticket.js';
 import LessonModel from '../models/Lesson.js';
-import { populate } from 'dotenv';
 
 export const createTicket = async (request, response) => {
     try {
@@ -110,7 +108,7 @@ export const getTicketById = async (request, response) => {
                                           })
                                           .populate({
                                             path: 'lessons', 
-                                            select: ['_id', 'status']
+                                            select: ['_id', 'status', 'day', 'date', 'durationMinutes', 'room']
                                           })
                                           .populate({
                                             path: 'student', 

@@ -42,27 +42,30 @@ export const getLessons = async (request, response) => {
     try {
         const {limit = 10, page = 0, date = ''} = request.query;
         const start = new Date(date);
-        // start.setHours(0,0,0,0);
         const end = new Date(date);
-        end.setHours(24);
-        console.log(start)
-        console.log(end)
-        const lessons = await LessonModel.paginate({date}, {
+        end.setHours(25);
+        const lessons = await LessonModel.paginate({date:{$gt: start, $lt:end}}, {
                                                page: +page + 1, 
                                                limit: limit,
                                                sort: { createdAt: -1 },
-                                               populate:{
-                                                path: 'teacher',
-                                                select: ['_id', 'fullName', 'subjects']
-                                               },
-                                               populate:{
-                                                path: 'student',
-                                                select: ['_id', 'fullName']
-                                               },
-                                               populate:{
-                                                path: 'tіcket',
-                                                select: ['_id', 'startDate', 'endDate', 'price', 'generalAmount', 'usedAmount', 'transferred']
-                                               },   
+                                               populate: [
+                                                    {
+                                                        path: 'teacher',
+                                                        select: ['_id', 'fullName', 'subjects']
+                                                    },
+                                                    {
+                                                        path: 'student',
+                                                        select: ['_id', 'fullName']
+                                                    },
+                                                    {
+                                                        path: 'ticket',
+                                                        select: ['_id', 'startDate', 'endDate', 'price', 'generalAmount'],
+                                                        populate: {
+                                                            path: 'lessons',
+                                                            select: ['_id', 'status']
+                                                        }
+                                                    }, 
+                                               ]
                                             });
     
         return response.status(200).json(lessons);
