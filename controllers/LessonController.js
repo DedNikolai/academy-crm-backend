@@ -197,14 +197,24 @@ export const getLessonsByStudent = async (request, response) => {
                                                page: +page + 1, 
                                                limit: limit,
                                                sort: { createdAt: -1 },
-                                               populate:{
-                                                path: 'teacher',
-                                                select: ['_id', 'fullName', 'subjects']
-                                               },
-                                               populate:{
-                                                path: 'tіcket',
-                                                select: ['_id', 'startDate', 'endDate', 'price', 'generalAmount', 'usedAmount', 'transferred']
-                                               },     
+                                               populate: [
+                                                        {
+                                                            path: 'teacher',
+                                                            select: ['_id', 'fullName', 'subjects']
+                                                        },
+                                                        {
+                                                            path: 'student',
+                                                            select: ['_id', 'fullName']
+                                                        },
+                                                        {
+                                                            path: 'ticket',
+                                                            select: ['_id', 'startDate', 'endDate', 'price', 'generalAmount'],
+                                                            populate: {
+                                                                path: 'lessons',
+                                                                select: ['_id', 'status']
+                                                            }
+                                                        }, 
+                                                ]
                                             });
 
 

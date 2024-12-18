@@ -142,7 +142,15 @@ export const getTicketsByStudent = async (request, response) => {
                                                populate:{
                                                 path: 'teacher',
                                                 select: ['_id', 'fullName', 'subjects']
-                                               }  
+                                               },
+                                               populate:{
+                                                path: 'student',
+                                                select: ['_id', 'fullName']
+                                               },
+                                               populate: {
+                                                path: 'lessons',
+                                                select: ['_id', 'status']
+                                               }   
                                             });
 
 
