@@ -53,5 +53,5 @@ export const lessonValidation = [
     // body('student').custom(studentValidation),
     body('subject', 'Invalid subject value').custom(subjectValidation),
     body('room', 'Invalid room type').isNumeric(),
-    // body('ticket').custom(ticketValidation),
+    body('ticket').custom(ticketValidation),
 ];
