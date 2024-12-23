@@ -1,5 +1,5 @@
-import StudentModel from '../models/Student.js';
 import Ticketmodel from '../models/Ticket.js';
+import LessonModel from '../models/Lesson.js';
 
 export const createTicket = async (request, response) => {
     try {
@@ -34,7 +34,11 @@ export const getTickets = async (request, response) => {
                                                populate:{
                                                 path: 'student',
                                                 select: ['_id', 'fullName']
-                                               },   
+                                               },
+                                               populate: {
+                                                path: 'lessons',
+                                                select: ['_id', 'status']
+                                               }   
                                             });
     
         return response.status(200).json(tickets);
@@ -73,6 +77,12 @@ export const deleteTicket = async (request, response) => {
             return response.status(400).json('Ticket not found');
         }
 
+        const lessons = await LessonModel.find({ticket: ticket._id});
+
+        if (lessons.length > 0) {
+            return response.status(200).json({message: 'Ticket has lessons'})
+        }
+
         const deletad = await Ticketmodel.deleteOne({_id: id});
 
         if (deletad) {
@@ -95,6 +105,10 @@ export const getTicketById = async (request, response) => {
                                           .populate({
                                             path: 'teacher', 
                                             select: ['_id', 'fullName', 'subjects']
+                                          })
+                                          .populate({
+                                            path: 'lessons', 
+                                            select: ['_id', 'status', 'day', 'date', 'durationMinutes', 'room']
                                           })
                                           .populate({
                                             path: 'student', 
@@ -128,7 +142,15 @@ export const getTicketsByStudent = async (request, response) => {
                                                populate:{
                                                 path: 'teacher',
                                                 select: ['_id', 'fullName', 'subjects']
-                                               }  
+                                               },
+                                               populate:{
+                                                path: 'student',
+                                                select: ['_id', 'fullName']
+                                               },
+                                               populate: {
+                                                path: 'lessons',
+                                                select: ['_id', 'status']
+                                               }   
                                             });
 
 

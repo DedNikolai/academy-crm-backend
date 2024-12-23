@@ -1,6 +1,7 @@
 import { body } from "express-validator";
 import TeacherModel from '../models/Teacher.js';
 import StudentModel from '../models/Student.js';
+import TicketModel from '../models/Ticket.js'
 
 const teacherValidation = async (teacherId) => {
     const isTeacher = await TeacherModel.findById(teacherId);
@@ -31,15 +32,26 @@ const studentValidation = async (studentId) => {
     return true
 }
 
-export const ticketValidation = [
-    body('title', 'Invalid title value').isString().isLength({min: 5}),
-    body('startDate', 'Invalid startDate type').isString(),
-    body('endDate', 'Invalid endDate type').isString(),
-    body('student').custom(studentValidation),
+const ticketValidation = async (ticketId) => {
+    const isTicket = await TicketModel.findById(ticketId);
+    
+    if (!isTicket) {
+        throw new Error('No such ticket');
+    }
+
+    return true
+}
+
+
+
+export const lessonValidation = [
+    body('day', 'Invalid day value').isString().isLength({min: 5}),
+    body('date', 'Invalid date type').isString(),
+    // body('time', 'Invalid date type').isString(),
+    body('durationMinutes', 'Invalid duration type').isNumeric(),
+    // body('teacher').custom(teacherValidation)
+    // body('student').custom(studentValidation),
     body('subject', 'Invalid subject value').custom(subjectValidation),
-    body('teacher').custom(teacherValidation),
-    body('price', 'Invalid Price').isNumeric(),
-    body('generalAmount', 'Invalid generalAmount').isNumeric(),
-    // body('usedAmount', 'Invalid remainAmount').isNumeric(),
-    // body('transferredAmount', 'Invalid transferred').isNumeric().optional(),
+    body('room', 'Invalid room type').isNumeric(),
+    body('ticket').custom(ticketValidation),
 ];

@@ -1,5 +1,7 @@
 import TeacherModel from '../models/Teacher.js';
 import StudentModel from '../models/Student.js';
+import LessonModel from '../models/Lesson.js';
+import Ticketmodel from '../models/Ticket.js';
 
 export const createStudent = async (request, response) => {
     try {
@@ -64,9 +66,19 @@ export const deleteStudent = async (request, response) => {
         const id = request.params.id;
 
         const student = await StudentModel.findById(id);
+        const tickets = await Ticketmodel.find({student: student._id});
+        const lessons = await LessonModel.find({student: student._id});
+
+        if (tickets.length > 0) {
+            return response.status(400).json({message: 'Student has tickets'});
+        }
+
+        if (lessons.length > 0) {
+            return response.status(400).json({message: 'Student has lessons'});
+        }
 
         if (!student) {
-            return response.status(400).json('Student not found');
+            return response.status(400).json({message: 'Student not found'});
         }
 
         const deletad = await StudentModel.deleteOne({_id: id});
@@ -74,7 +86,7 @@ export const deleteStudent = async (request, response) => {
         if (deletad) {
             return response.status(200).json({message: 'Student was deletad'})
         } else {
-            return response.status(400).json('Student was not deleted');
+            return response.status(400).json({message: 'Student was not deleted'});
         }
 
     } catch(error) {

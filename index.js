@@ -10,6 +10,7 @@ import teacher from './routes/teacher.js';
 import worktime from './routes/worktime.js';
 import student from './routes/student.js';
 import ticket from './routes/ticket.js';
+import lesson from './routes/lesson.js';
  
 mongoose.connect(process.env.DB_URL)
     .then(() =>console.log("DB OK"))
@@ -34,6 +35,7 @@ app.use('/teacher', teacher);
 app.use('/worktime', worktime);
 app.use('/student', student);
 app.use('/ticket', ticket);
+app.use('/lesson', lesson);
 
 
 app.listen(port, (err) => {

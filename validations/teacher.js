@@ -5,5 +5,6 @@ export const createTeacherValidation = [
     body('email', 'Invalid email value').isEmail(),
     body('phone', 'Invalid phone value').isString(),
     body('birthday', 'Invalid birthdday type').isString().optional(),
-    body('age', "Invalid age").isNumeric().optional()
+    body('age', "Invalid age").isNumeric().optional(),
+    body('isActive', 'Ivalid isActiveValue').isBoolean(),
 ];
