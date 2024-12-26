@@ -15,5 +15,6 @@ router.delete('/:id', checkAuth, checkRole(['OWNER', 'ADMIN']), LessonController
 router.get('/:id', checkAuth, checkRole(['OWNER', 'ADMIN']), LessonController.getLessonById);
 router.get('/student/:id', checkAuth, checkRole(['OWNER', 'ADMIN']), LessonController.getLessonsByStudent);
 router.get('/ticket/:id', checkAuth, checkRole(['OWNER', 'ADMIN']), LessonController.getLessonsByTicket);
+router.get('/week/:date', checkAuth, checkRole(['OWNER', 'ADMIN']), LessonController.getLessonsByWeek);
 
 export default router;

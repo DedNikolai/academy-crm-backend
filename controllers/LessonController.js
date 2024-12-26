@@ -156,6 +156,7 @@ export const deleteLesson = async (request, response) => {
 };
 
 export const getLessonById = async (request, response) => {
+
     try {
         const id = request.params.id;
 
@@ -247,4 +248,32 @@ export const getLessonsByTicket = async (request, response) => {
         response.status(500).json({message: 'Cant get lessons'})
     }
 }
+
+export const getLessonsByWeek = async (request, response) => {
+    try {
+        const date = request.params.date;
+        const currentDate = new Date(date);
+        const week = Array(7).fill(currentDate).map((el, idx) =>
+            new Date(el.setDate(el.getDate() - el.getDay() + idx + 1)))
+        const start = week[0];
+        const end = week[6];
+        start.setHours(0, 0, 0 ,0);
+        end.setHours(25);
+        const lessons = await LessonModel.find({date:{$gt: start, $lt:end}})
+                                            .populate({
+                                                path: 'teacher', 
+                                                select: ['_id', 'fullName', 'subjects']
+                                            })
+                                            .populate({
+                                                path: 'student', 
+                                                select: ['_id', 'fullName', 'subjects'],
+                                            })
+                                            .exec(); 
+    
+        return response.status(200).json(lessons);
+    } catch(error) {
+        console.log(error);
+        response.status(500).json({message: 'Cant get lessons'})
+    }
+};
 
