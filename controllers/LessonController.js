@@ -44,10 +44,12 @@ export const getLessons = async (request, response) => {
         const start = new Date(date);
         const end = new Date(date);
         end.setHours(25);
-        const lessons = await LessonModel.paginate({date:{$gt: start, $lt:end}}, {
+        const params = date ? {date: {$gt: start, $lt:end}} : {};
+        const sortParams = date ? { createdAt: -1 } : {date: -1}
+        const lessons = await LessonModel.paginate(params, {
                                                page: +page + 1, 
                                                limit: limit,
-                                               sort: { createdAt: -1 },
+                                               sort: sortParams,
                                                populate: [
                                                     {
                                                         path: 'teacher',
