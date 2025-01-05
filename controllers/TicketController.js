@@ -80,7 +80,7 @@ export const deleteTicket = async (request, response) => {
         const lessons = await LessonModel.find({ticket: ticket._id});
 
         if (lessons.length > 0) {
-            return response.status(200).json({message: 'Ticket has lessons'})
+            return response.status(400).json({message: 'Ticket has lessons'})
         }
 
         const deletad = await Ticketmodel.deleteOne({_id: id});
