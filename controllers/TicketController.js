@@ -27,18 +27,18 @@ export const getTickets = async (request, response) => {
                                                page: +page + 1, 
                                                limit: limit,
                                                sort: { createdAt: -1 },
-                                               populate:{
+                                               populate:[{
                                                 path: 'teacher',
                                                 select: ['_id', 'fullName', 'subjects']
                                                },
-                                               populate:{
+                                               {
                                                 path: 'student',
                                                 select: ['_id', 'fullName']
                                                },
-                                               populate: {
+                                               {
                                                 path: 'lessons',
                                                 select: ['_id', 'status']
-                                               }   
+                                               }]   
                                             });
     
         return response.status(200).json(tickets);
@@ -139,18 +139,18 @@ export const getTicketsByStudent = async (request, response) => {
                                                page: +page + 1, 
                                                limit: limit,
                                                sort: { createdAt: -1 },
-                                               populate:{
+                                               populate:[{
                                                 path: 'teacher',
                                                 select: ['_id', 'fullName', 'subjects']
                                                },
-                                               populate:{
+                                               {
                                                 path: 'student',
                                                 select: ['_id', 'fullName']
                                                },
-                                               populate: {
+                                               {
                                                 path: 'lessons',
                                                 select: ['_id', 'status']
-                                               }   
+                                               }]   
                                             });
 
 

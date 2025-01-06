@@ -48,15 +48,15 @@ const TicketSchema = mongoose.Schema({
         default: []
     },
 
-    // usedAmount: {
-    //     type: Number,
-    //     required: true,
-    // },
+    isPaid: {
+        type: Boolean,
+        default: false
+    },
 
-    // transferred: {
-    //     type: Number,
-    //     required: true,
-    // }
+    payType: {
+        type: String,
+    },
+
 
     },
     {
