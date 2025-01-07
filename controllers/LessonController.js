@@ -61,7 +61,7 @@ export const getLessons = async (request, response) => {
                                                     },
                                                     {
                                                         path: 'ticket',
-                                                        select: ['_id', 'startDate', 'endDate', 'price', 'generalAmount'],
+                                                        select: ['_id', 'startDate', 'endDate', 'price', 'generalAmount', 'isPaid'],
                                                         populate: {
                                                             path: 'lessons',
                                                             select: ['_id', 'status']
@@ -176,7 +176,7 @@ export const getLessonById = async (request, response) => {
                                             },
                                             populate:{
                                                 path: 'tіcket',
-                                                select: ['_id', 'startDate', 'endDate', 'price', 'generalAmount', 'usedAmount', 'transferred']
+                                                select: ['_id', 'startDate', 'endDate', 'price', 'generalAmount', 'usedAmount', 'transferred', 'isPaid']
                                                },   
                                           })
                                           .exec(); 
@@ -211,7 +211,7 @@ export const getLessonsByStudent = async (request, response) => {
                                                         },
                                                         {
                                                             path: 'ticket',
-                                                            select: ['_id', 'startDate', 'endDate', 'price', 'generalAmount'],
+                                                            select: ['_id', 'startDate', 'endDate', 'price', 'generalAmount', 'isPaid'],
                                                             populate: {
                                                                 path: 'lessons',
                                                                 select: ['_id', 'status']
@@ -269,6 +269,10 @@ export const getLessonsByWeek = async (request, response) => {
                                             .populate({
                                                 path: 'student', 
                                                 select: ['_id', 'fullName', 'subjects'],
+                                            })
+                                            .populate({
+                                                path: 'ticket', 
+                                                select: ['_id', 'isPaid'],
                                             })
                                             .exec(); 
     
