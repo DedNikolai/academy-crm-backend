@@ -1,5 +1,6 @@
 import Ticketmodel from '../models/Ticket.js';
 import LessonModel from '../models/Lesson.js';
+import PayAccountModel from '../models/PayAccount.js';
 
 export const createTicket = async (request, response) => {
     try {
@@ -8,6 +9,13 @@ export const createTicket = async (request, response) => {
 
         const ticket = await doc.save();
         if (ticket) {
+            if (ticket.isPaid) {
+                const payType = ticket.payType;
+                await PayAccountModel.findOneAndUpdate({title: payType}, {
+                    $inc: {
+                    value: ticket.price
+                  }}, {returnDocument: 'after'})
+            }
             return response.status(200).json(ticket);
         } else {
             return response.status(400).json({message: 'Cant create ticket'})
@@ -53,12 +61,27 @@ export const updateTicket = async (request, response) => {
         const data = request.body;
         const ticketId = request.params.id;
 
+        const ticketFromDb = await Ticketmodel.findById(ticketId)
+
         Ticketmodel.findOneAndUpdate({_id: ticketId}, {...data}, {returnDocument: 'after'})
-            .then(result => {
+            .then(async result => {
                 if (!result) {
                     return response.status(400).json({message: `Ticket ${id} not found`})
                 }
-
+                if (ticketFromDb.isPaid !== result.isPaid) {
+                    
+                    if (result.isPaid) {
+                        await PayAccountModel.findOneAndUpdate({title: result.payType}, {
+                            $inc: {
+                            value: result.price
+                          }}, {returnDocument: 'after'})
+                    } else {
+                        await PayAccountModel.findOneAndUpdate({title: ticketFromDb.payType}, {
+                            $inc: {
+                            value: -result.price
+                          }}, {returnDocument: 'after'})
+                    }
+                }
                 return response.status(200).json({message: "Ticket was updated"});
         }) 
     } catch(error) {
@@ -72,6 +95,10 @@ export const deleteTicket = async (request, response) => {
         const id = request.params.id;
 
         const ticket = await Ticketmodel.findById(id);
+
+        if (ticket.isPaid) {
+            return response.status(400).json({message: 'Не можна видалити оплачений абонемент'});
+        }
 
         if (!ticket) {
             return response.status(400).json('Ticket not found');

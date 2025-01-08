@@ -31,8 +31,16 @@ const studentValidation = async (studentId) => {
     return true
 }
 
+const payTypeValidation = (payType, {req}) => {
+    if (req.body.isPaid && !payType) {
+        throw new Error('Вкажіть тип оплати');
+    }
+
+    return true;
+}
+
 export const ticketValidation = [
-    body('title', 'Invalid title value').isString().isLength({min: 5}),
+    body('title', 'Invalid title value').isString().isLength({min: 3}),
     body('startDate', 'Invalid startDate type').isString(),
     body('endDate', 'Invalid endDate type').isString(),
     body('student').custom(studentValidation),
@@ -40,6 +48,5 @@ export const ticketValidation = [
     body('teacher').custom(teacherValidation),
     body('price', 'Invalid Price').isNumeric(),
     body('generalAmount', 'Invalid generalAmount').isNumeric(),
-    // body('usedAmount', 'Invalid remainAmount').isNumeric(),
-    // body('transferredAmount', 'Invalid transferred').isNumeric().optional(),
+    body('payType', 'Invalid Paytype').custom(payTypeValidation),
 ];
