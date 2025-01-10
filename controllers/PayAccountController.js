@@ -18,3 +18,14 @@ export const createPayAccount = async (request, response) => {
         response.status(500).json({message: 'PayAccount was not created'})
     }
 }
+
+export const getPayAccounts = async (request, response) => {
+    try {
+        const accounts = await PayAccountModel.find({});
+
+        response.status(200).json(accounts);
+    } catch(error) {
+        console.log(error);
+        response.status(500).json({message: 'Cant get accounts'})
+    }
+};

@@ -189,3 +189,15 @@ export const getTicketsByStudent = async (request, response) => {
     }
 }
 
+export const getTicketsSubjectStats = async (request, response) => {
+    try {
+
+        const tickets = await Ticketmodel.find({}).select('_id price subject');
+    
+        return response.status(200).json(tickets);
+    } catch(error) {
+        console.log(error);
+        response.status(500).json({message: 'Cant get tickets'})
+    }
+};
+

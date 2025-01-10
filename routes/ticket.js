@@ -13,5 +13,6 @@ router.patch('/:id', checkAuth, checkRole(['OWNER', 'ADMIN']), Ticket.ticketVali
 router.delete('/:id', checkAuth, checkRole(['OWNER', 'ADMIN']), TicketController.deleteTicket);
 router.get('/:id', checkAuth, checkRole(['OWNER', 'ADMIN']), TicketController.getTicketById);
 router.get('/student/:id', checkAuth, checkRole(['OWNER', 'ADMIN']), TicketController.getTicketsByStudent);
+router.get('/stats/subject', checkAuth, checkRole(['OWNER', 'ADMIN']), TicketController.getTicketsSubjectStats);
 
 export default router;
