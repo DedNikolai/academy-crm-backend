@@ -38,6 +38,11 @@ const TeacherSchema = mongoose.Schema({
 
     education: {
         type: String
+    },
+
+    balance: {
+        type: Number,
+        default: 0
     }
 
     },

@@ -12,7 +12,7 @@ export default async (req, res, next) => {
     end.setHours(25, 0, 0, 0);
 
     try {
-        const lessonsWithCurrentDate = await LessonModel.find({date:{$gt: start, $lt:end}});
+        const lessonsWithCurrentDate = await LessonModel.find({date:{$gt: start, $lt:end}, '_id': {$ne: current._id}});
         const teacher = await TeacherModel.findById(current.teacher)
                                           .populate({
                                             path: 'worktimes',
