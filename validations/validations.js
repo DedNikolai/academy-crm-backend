@@ -7,3 +7,4 @@ export * as Student from './student.js';
 export * as Ticket from './ticket.js';
 export * as Lesson from './lesson.js';
 export * as PayAccount from './payAccount.js';
+export * as Salary from './salary.js';
