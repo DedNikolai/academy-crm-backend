@@ -3,6 +3,7 @@ import Ticketmodel from '../models/Ticket.js';
 import LessonModel from '../models/Lesson.js';
 import {LessonStatus} from '../constants/lesson-status.js';
 import TeacherModel from '../models/Teacher.js';
+import {Payouts} from '../constants/payout.js';
 
 export const createLesson = async (request, response) => {
     try {
@@ -124,7 +125,24 @@ export const updateLesson = async (request, response) => {
                 }
 
                 if (result.payout !== lessonFromBD.payout) {
+                    if (result.payout) {
 
+                        await TeacherModel.findOneAndUpdate({_id: result.teacher}, 
+                            {
+                                $inc: {
+                                balance: Payouts[`${result.durationMinutes}`]
+                                }
+                            }
+                        )
+                    } else {
+                        await TeacherModel.findOneAndUpdate({_id: result.teacher}, 
+                            {
+                                $inc: {
+                                balance: -Payouts[`${result.durationMinutes}`]
+                                }
+                            }
+                        )
+                    }
                 }
 
                 return response.status(200).json(result);
