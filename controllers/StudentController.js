@@ -138,3 +138,15 @@ export const getStudentsByTeacher = async (request, response) => {
     }
 }
 
+export const getAllStudents = async (request, response) => {
+    try {
+        const students = await StudentModel.find({isActive: true})
+                                            .select('_id subjects teachers');
+    
+        return response.status(200).json(students);
+    } catch(error) {
+        console.log(error);
+        response.status(500).json({message: 'Cant get students'})
+    }
+};
+

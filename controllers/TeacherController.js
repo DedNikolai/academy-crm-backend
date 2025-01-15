@@ -25,7 +25,6 @@ export const createTeacher = async (request, response) => {
 export const getTeachers = async (request, response) => {
     try {
         const teachers = await TeacherModel.find({})
-                                // .populate('subjects')
                                 .populate({
                                     path: 'worktimes', 
                                     select: ['_id', 'day', 'startTime', 'endTime', 'teacher'],

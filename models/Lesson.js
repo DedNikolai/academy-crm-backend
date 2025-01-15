@@ -52,6 +52,11 @@ const LessonSchema = mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Ticket',
         required: true
+    },
+
+    payout: {
+        type: Boolean,
+        default: false
     }
 
     },

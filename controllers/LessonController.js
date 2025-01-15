@@ -2,6 +2,8 @@ import StudentModel from '../models/Student.js';
 import Ticketmodel from '../models/Ticket.js';
 import LessonModel from '../models/Lesson.js';
 import {LessonStatus} from '../constants/lesson-status.js';
+import TeacherModel from '../models/Teacher.js';
+import {Payouts} from '../constants/payout.js';
 
 export const createLesson = async (request, response) => {
     try {
@@ -61,7 +63,7 @@ export const getLessons = async (request, response) => {
                                                     },
                                                     {
                                                         path: 'ticket',
-                                                        select: ['_id', 'startDate', 'endDate', 'price', 'generalAmount'],
+                                                        select: ['_id', 'startDate', 'endDate', 'price', 'generalAmount', 'isPaid'],
                                                         populate: {
                                                             path: 'lessons',
                                                             select: ['_id', 'status']
@@ -81,6 +83,7 @@ export const updateLesson = async (request, response) => {
     try {
         const data = request.body;
         const lessonId = request.params.id;
+        const lessonFromBD = await LessonModel.findById(lessonId);
 
         const ticket = await Ticketmodel.findOne({_id: data.ticket})
                                         .populate({
@@ -104,7 +107,6 @@ export const updateLesson = async (request, response) => {
                 const activedAmount = ticket.lessons.filter(lesson => lesson.status !== LessonStatus.TRANSFERED).length;
                 
                 const lessonFromBD = ticket.lessons.find(lesson => lesson._id.toString() === data._id);
-                console.log(activedAmount, lessonFromBD)
 
                 if (activedAmount >= ticket.generalAmount && lessonFromBD.status === LessonStatus.TRANSFERED ) {
                     return response.status(400).json({message: 'Limit of transfered lessons qauntity'})
@@ -117,9 +119,30 @@ export const updateLesson = async (request, response) => {
         }
 
         LessonModel.findOneAndUpdate({_id: lessonId}, {...data}, {returnDocument: 'after'})
-            .then(result => {
+            .then(async result => {
                 if (!result) {
                     return response.status(400).json({message: `Lesson ${lessonId} not found`})
+                }
+
+                if (result.payout !== lessonFromBD.payout) {
+                    if (result.payout) {
+
+                        await TeacherModel.findOneAndUpdate({_id: result.teacher}, 
+                            {
+                                $inc: {
+                                balance: Payouts[`${result.durationMinutes}`]
+                                }
+                            }
+                        )
+                    } else {
+                        await TeacherModel.findOneAndUpdate({_id: result.teacher}, 
+                            {
+                                $inc: {
+                                balance: -Payouts[`${result.durationMinutes}`]
+                                }
+                            }
+                        )
+                    }
                 }
 
                 return response.status(200).json(result);
@@ -137,6 +160,10 @@ export const deleteLesson = async (request, response) => {
         const lesson = await LessonModel.findById(id);
         const ticket = await Ticketmodel.findById(lesson.ticket);
         ticket.lessons.pull(lesson._id);
+
+        if (lesson.payout) {
+            return response.status(400).json('Не можна видалити урок по якому є виплата викладачу');
+        }
 
         if (!lesson) {
             return response.status(400).json('Lesson not found');
@@ -176,7 +203,7 @@ export const getLessonById = async (request, response) => {
                                             },
                                             populate:{
                                                 path: 'tіcket',
-                                                select: ['_id', 'startDate', 'endDate', 'price', 'generalAmount', 'usedAmount', 'transferred']
+                                                select: ['_id', 'startDate', 'endDate', 'price', 'generalAmount', 'usedAmount', 'transferred', 'isPaid']
                                                },   
                                           })
                                           .exec(); 
@@ -211,7 +238,7 @@ export const getLessonsByStudent = async (request, response) => {
                                                         },
                                                         {
                                                             path: 'ticket',
-                                                            select: ['_id', 'startDate', 'endDate', 'price', 'generalAmount'],
+                                                            select: ['_id', 'startDate', 'endDate', 'price', 'generalAmount', 'isPaid'],
                                                             populate: {
                                                                 path: 'lessons',
                                                                 select: ['_id', 'status']
@@ -270,6 +297,10 @@ export const getLessonsByWeek = async (request, response) => {
                                                 path: 'student', 
                                                 select: ['_id', 'fullName', 'subjects'],
                                             })
+                                            .populate({
+                                                path: 'ticket', 
+                                                select: ['_id', 'isPaid'],
+                                            })
                                             .exec(); 
     
         return response.status(200).json(lessons);
@@ -278,4 +309,26 @@ export const getLessonsByWeek = async (request, response) => {
         response.status(500).json({message: 'Cant get lessons'})
     }
 };
+
+export const updatePayuot  = async (request, response) => {
+    const data = request.body;
+    const lessonId = request.params.id;
+    try {
+        LessonModel.findOneAndUpdate({_id: lessonId}, {payout: data.payout}, {returnDocument: 'after'})
+            .then(async result => {
+                if (!result) {
+                    return response.status(400).json({message: `Lesson ${lessonId} not found`})
+                }
+
+                if (result.payout !== lessonFromBD.payout) {
+
+                }
+
+                return response.status(200).json(result);
+        }) 
+    } catch(error) {
+        console.log(error);
+        response.status(500).json({message: 'Cant get update'})
+    }
+}
 

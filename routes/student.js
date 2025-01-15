@@ -13,5 +13,6 @@ router.patch('/:id', checkAuth, checkRole(['OWNER', 'ADMIN']), Student.studentVa
 router.delete('/:id', checkAuth, checkRole(['OWNER', 'ADMIN']), StudentController.deleteStudent);
 router.get('/:id', checkAuth, checkRole(['OWNER', 'ADMIN']), StudentController.getStudentById);
 router.get('/teacher/:id', checkAuth, checkRole(['OWNER', 'ADMIN']), StudentController.getStudentsByTeacher);
+router.get('/stats/all', checkAuth, checkRole(['OWNER', 'ADMIN']), StudentController.getAllStudents);
 
 export default router;

@@ -1,5 +1,6 @@
 import Ticketmodel from '../models/Ticket.js';
 import LessonModel from '../models/Lesson.js';
+import PayAccountModel from '../models/PayAccount.js';
 
 export const createTicket = async (request, response) => {
     try {
@@ -8,6 +9,13 @@ export const createTicket = async (request, response) => {
 
         const ticket = await doc.save();
         if (ticket) {
+            if (ticket.isPaid) {
+                const payType = ticket.payType;
+                await PayAccountModel.findOneAndUpdate({title: payType}, {
+                    $inc: {
+                    value: ticket.price
+                  }}, {returnDocument: 'after'})
+            }
             return response.status(200).json(ticket);
         } else {
             return response.status(400).json({message: 'Cant create ticket'})
@@ -27,18 +35,18 @@ export const getTickets = async (request, response) => {
                                                page: +page + 1, 
                                                limit: limit,
                                                sort: { createdAt: -1 },
-                                               populate:{
+                                               populate:[{
                                                 path: 'teacher',
                                                 select: ['_id', 'fullName', 'subjects']
                                                },
-                                               populate:{
+                                               {
                                                 path: 'student',
                                                 select: ['_id', 'fullName']
                                                },
-                                               populate: {
+                                               {
                                                 path: 'lessons',
                                                 select: ['_id', 'status']
-                                               }   
+                                               }]   
                                             });
     
         return response.status(200).json(tickets);
@@ -53,12 +61,27 @@ export const updateTicket = async (request, response) => {
         const data = request.body;
         const ticketId = request.params.id;
 
+        const ticketFromDb = await Ticketmodel.findById(ticketId)
+
         Ticketmodel.findOneAndUpdate({_id: ticketId}, {...data}, {returnDocument: 'after'})
-            .then(result => {
+            .then(async result => {
                 if (!result) {
                     return response.status(400).json({message: `Ticket ${id} not found`})
                 }
-
+                if (ticketFromDb.isPaid !== result.isPaid) {
+                    
+                    if (result.isPaid) {
+                        await PayAccountModel.findOneAndUpdate({title: result.payType}, {
+                            $inc: {
+                            value: result.price
+                          }}, {returnDocument: 'after'})
+                    } else {
+                        await PayAccountModel.findOneAndUpdate({title: ticketFromDb.payType}, {
+                            $inc: {
+                            value: -result.price
+                          }}, {returnDocument: 'after'})
+                    }
+                }
                 return response.status(200).json({message: "Ticket was updated"});
         }) 
     } catch(error) {
@@ -72,6 +95,10 @@ export const deleteTicket = async (request, response) => {
         const id = request.params.id;
 
         const ticket = await Ticketmodel.findById(id);
+
+        if (ticket.isPaid) {
+            return response.status(400).json({message: 'Не можна видалити оплачений абонемент'});
+        }
 
         if (!ticket) {
             return response.status(400).json('Ticket not found');
@@ -139,18 +166,18 @@ export const getTicketsByStudent = async (request, response) => {
                                                page: +page + 1, 
                                                limit: limit,
                                                sort: { createdAt: -1 },
-                                               populate:{
+                                               populate:[{
                                                 path: 'teacher',
                                                 select: ['_id', 'fullName', 'subjects']
                                                },
-                                               populate:{
+                                               {
                                                 path: 'student',
                                                 select: ['_id', 'fullName']
                                                },
-                                               populate: {
+                                               {
                                                 path: 'lessons',
                                                 select: ['_id', 'status']
-                                               }   
+                                               }]   
                                             });
 
 
@@ -161,4 +188,16 @@ export const getTicketsByStudent = async (request, response) => {
         response.status(500).json({message: 'Cant get tickets'})
     }
 }
+
+export const getTicketsSubjectStats = async (request, response) => {
+    try {
+
+        const tickets = await Ticketmodel.find({}).select('_id price subject');
+    
+        return response.status(200).json(tickets);
+    } catch(error) {
+        console.log(error);
+        response.status(500).json({message: 'Cant get tickets'})
+    }
+};
 
