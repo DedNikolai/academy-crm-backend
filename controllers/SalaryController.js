@@ -6,8 +6,9 @@ export const createSalary = async (request, response) => {
     try {
         const data = request.body;
         const doc = new SalaryModel({...data});
-        const teacher = await TeacherModel.findById(salary.teacher);
-
+        const teacher = await TeacherModel.findById(data.teacher);
+        const payaccount = await PayAccountModel.findById(data.payaccount); 
+        
         if (teacher.balance < data.value) {
             return response.status(400).json({message: 'Баланс вчителя менший за вказану суму'})
         }
@@ -19,10 +20,10 @@ export const createSalary = async (request, response) => {
         const salary = await doc.save();
 
         if (salary) {
-            await PayAccountModel.findOneAndUpdate({title: salary.payaccount}, 
+            await PayAccountModel.findOneAndUpdate({_id: salary.payaccount}, 
                 {
                     $inc: {
-                    balance: -salary.value
+                        value: -salary.value
                     }
                 }
             )
@@ -51,10 +52,17 @@ export const getSalaries = async (request, response) => {
         const salaries = await SalaryModel.paginate({}, {
                                                page: +page + 1, 
                                                limit: limit,
-                                               populate:{
-                                                path: 'teachers',
-                                                select: ['_id', 'fullName', 'balance']
-                                               }  
+                                               populate:[
+                                                {
+                                                    path: 'teacher',
+                                                    select: ['_id', 'fullName', 'balance']
+                                                },
+                                                {
+                                                    path: 'payaccount',
+                                                    select: ['_id', 'title']
+                                                }
+
+                                            ]  
                                             });
     
         return response.status(200).json(salaries);
@@ -68,10 +76,9 @@ export const getSalaries = async (request, response) => {
 export const deleteSalary = async (request, response) => {
     try {
         const id = request.params.id;
-
         const salary = await SalaryModel.findById(id);
         const teacher = await TeacherModel.findById(salary.teacher);
-        const deletad = await TeacherModel.deleteOne({_id: id});
+        const deletad = await SalaryModel.deleteOne({_id: id});
 
         if (deletad) {
             await TeacherModel.findOneAndUpdate({_id: teacher._id}, 
@@ -81,10 +88,10 @@ export const deleteSalary = async (request, response) => {
                     }
                 }
             )
-            await PayAccountModel.findOneAndUpdate({title: salary.payaccount}, 
+            await PayAccountModel.findOneAndUpdate({_id: salary.payaccount}, 
                 {
                     $inc: {
-                    balance: salary.value
+                    value: salary.value
                     }
                 }
             )
