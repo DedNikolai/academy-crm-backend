@@ -12,7 +12,7 @@ const teacherValidation = async (teacherId) => {
 };
 
 const subjectValidation = (value) => {
-    const subjects = ['Вокал', 'Барабани', 'Фортепіано', 'Гітара'];
+    const subjects = ['VOCAL', 'DRUMS', 'PIANO', 'GUITAR'];
     if (!subjects.includes(value)) {
         throw new Error('No such subject');
     }

@@ -113,7 +113,7 @@ export const deleteTicket = async (request, response) => {
         const deletad = await Ticketmodel.deleteOne({_id: id});
 
         if (deletad) {
-            return response.status(200).json({message: 'Ticket was deletad'})
+            return response.status(200).json(ticket)
         } else {
             return response.status(400).json('Ticket was not deleted');
         }

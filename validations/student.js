@@ -11,7 +11,7 @@ const teacherValidation = async (teachers) => {
 };
 
 const subjectsValidation = (value) => {
-    const subjects = ['Вокал', 'Барабани', 'Фортепіано', 'Гітара'];
+    const subjects = ['VOCAL', 'DRUMS', 'PIANO', 'GUITAR'];
     let isValid = true;
     value.forEach(item => {
         if (!subjects.includes(item)) {
@@ -29,7 +29,7 @@ const subjectsValidation = (value) => {
 }
 
 const genderValidation = (gender) => {
-    const genders = ['Чоловіча', 'Жіноча'];
+    const genders = ['MAN', 'WOMEN'];
     if (!genders.includes(gender)) {
         throw new Error('No such gender');
     }
