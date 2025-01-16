@@ -124,7 +124,6 @@ function teacherTimeCheck(lessonsWithCurrentDate, current) {
 
 function teacherWorkTimeCheck(current, teacher) {
     let result = true
-
     const workDays = teacher.worktimes.filter(worktime => worktime.day === current.day);
 
     if (workDays.length === 0) {
