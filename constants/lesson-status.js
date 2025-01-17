@@ -1,5 +1,5 @@
 export const LessonStatus = {
-    SUCCESS: 'Відбулося',
-    CANCEL: 'Скасовано',
-    TRANSFERED:'Перенесено',
+    SUCCESS: 'SUCCESS',
+    CANCEL: 'CANCEL',
+    TRANSFERED:'TRANSFERED',
 }

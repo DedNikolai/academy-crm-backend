@@ -3,17 +3,17 @@ import TeacherModel from '../models/Teacher.js';
 import StudentModel from '../models/Student.js';
 import TicketModel from '../models/Ticket.js'
 
-const teacherValidation = async (teacherId) => {
-    const isTeacher = await TeacherModel.findById(teacherId);
-    if (!isTeacher) {
-        throw new Error('No such teacher');
-    }
+// const teacherValidation = async (teacherId) => {
+//     const isTeacher = await TeacherModel.findById(teacherId);
+//     if (!isTeacher) {
+//         throw new Error('No such teacher');
+//     }
 
-    return true
-};
+//     return true
+// };
 
 const subjectValidation = (value) => {
-    const subjects = ['Вокал', 'Барабани', 'Фортепіано', 'Гітара'];
+    const subjects = ['VOCAL', 'DRUMS', 'PIANO', 'GUITAR'];
     if (!subjects.includes(value)) {
         throw new Error('No such subject');
     }
@@ -22,15 +22,15 @@ const subjectValidation = (value) => {
 
 }
 
-const studentValidation = async (studentId) => {
-    const isStudent = await StudentModel.findById(studentId);
+// const studentValidation = async (studentId) => {
+//     const isStudent = await StudentModel.findById(studentId);
     
-    if (!isStudent) {
-        throw new Error('No such student');
-    }
+//     if (!isStudent) {
+//         throw new Error('No such student');
+//     }
 
-    return true
-}
+//     return true
+// }
 
 const ticketValidation = async (ticketId) => {
     const isTicket = await TicketModel.findById(ticketId);

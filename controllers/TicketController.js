@@ -5,13 +5,15 @@ import PayAccountModel from '../models/PayAccount.js';
 export const createTicket = async (request, response) => {
     try {
         const data = request.body;
-        const doc = new Ticketmodel({...data});
+        const payType = data.payType || null
 
+        const doc = new Ticketmodel({...data, payType});
+    
         const ticket = await doc.save();
         if (ticket) {
             if (ticket.isPaid) {
                 const payType = ticket.payType;
-                await PayAccountModel.findOneAndUpdate({title: payType}, {
+                await PayAccountModel.findOneAndUpdate({_id: payType}, {
                     $inc: {
                     value: ticket.price
                   }}, {returnDocument: 'after'})
@@ -44,6 +46,10 @@ export const getTickets = async (request, response) => {
                                                 select: ['_id', 'fullName']
                                                },
                                                {
+                                                path: 'payType',
+                                                select: ['_id', 'title']
+                                               },
+                                               {
                                                 path: 'lessons',
                                                 select: ['_id', 'status']
                                                }]   
@@ -59,11 +65,12 @@ export const getTickets = async (request, response) => {
 export const updateTicket = async (request, response) => {
     try {
         const data = request.body;
+        const payType = data.payType || null
         const ticketId = request.params.id;
 
         const ticketFromDb = await Ticketmodel.findById(ticketId)
 
-        Ticketmodel.findOneAndUpdate({_id: ticketId}, {...data}, {returnDocument: 'after'})
+        Ticketmodel.findOneAndUpdate({_id: ticketId}, {...data, payType}, {returnDocument: 'after'})
             .then(async result => {
                 if (!result) {
                     return response.status(400).json({message: `Ticket ${id} not found`})
@@ -71,12 +78,23 @@ export const updateTicket = async (request, response) => {
                 if (ticketFromDb.isPaid !== result.isPaid) {
                     
                     if (result.isPaid) {
-                        await PayAccountModel.findOneAndUpdate({title: result.payType}, {
+                        await PayAccountModel.findOneAndUpdate({_id: result.payType}, {
                             $inc: {
                             value: result.price
                           }}, {returnDocument: 'after'})
                     } else {
-                        await PayAccountModel.findOneAndUpdate({title: ticketFromDb.payType}, {
+                        await PayAccountModel.findOneAndUpdate({_id: ticketFromDb.payType}, {
+                            $inc: {
+                            value: -result.price
+                          }}, {returnDocument: 'after'})
+                    }
+                } else {
+                    if (result.isPaid && result.payType !== ticketFromDb.payType) {
+                        await PayAccountModel.findOneAndUpdate({_id: result.payType}, {
+                            $inc: {
+                            value: result.price
+                          }}, {returnDocument: 'after'});
+                          await PayAccountModel.findOneAndUpdate({_id: ticketFromDb.payType}, {
                             $inc: {
                             value: -result.price
                           }}, {returnDocument: 'after'})
@@ -113,7 +131,7 @@ export const deleteTicket = async (request, response) => {
         const deletad = await Ticketmodel.deleteOne({_id: id});
 
         if (deletad) {
-            return response.status(200).json({message: 'Ticket was deletad'})
+            return response.status(200).json(ticket)
         } else {
             return response.status(400).json('Ticket was not deleted');
         }

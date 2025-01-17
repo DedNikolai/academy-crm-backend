@@ -1,7 +1,7 @@
 import WorktimeModel from '../models/WorkTime.js';
 import TeacherModel from '../models/Teacher.js';
 
-const days = ['Понеділок', 'Вівторок', 'Середа', 'Четвер', "П'ятниця", "Субота", "Неділя"]
+const days = ['MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', "FRIDAY", "SATURDAY", "Неділя"]
 
 export const createWorktime = async (request, response) => {
     try {
