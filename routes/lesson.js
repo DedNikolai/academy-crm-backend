@@ -16,6 +16,6 @@ router.get('/:id', checkAuth, checkRole(['OWNER', 'ADMIN']), LessonController.ge
 router.get('/student/:id', checkAuth, checkRole(['OWNER', 'ADMIN']), LessonController.getLessonsByStudent);
 router.get('/ticket/:id', checkAuth, checkRole(['OWNER', 'ADMIN']), LessonController.getLessonsByTicket);
 router.get('/week/:date', checkAuth, checkRole(['OWNER', 'ADMIN']), LessonController.getLessonsByWeek);
-router.put('/:id', checkAuth, checkRole(['OWNER', 'ADMIN']), Lesson.lessonValidation, handleValidationErros, lessonValidation, LessonController.updatePayuot);
+router.put('/:id', checkAuth, checkRole(['OWNER', 'ADMIN']), Lesson.lessonValidation, handleValidationErros, LessonController.updateLesson);
 
 export default router;
