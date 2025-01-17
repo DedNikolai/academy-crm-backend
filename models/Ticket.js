@@ -54,7 +54,8 @@ const TicketSchema = mongoose.Schema({
     },
 
     payType: {
-        type: String,
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'PayAccount'
     },
 
 
