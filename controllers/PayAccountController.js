@@ -29,3 +29,24 @@ export const getPayAccounts = async (request, response) => {
         response.status(500).json({message: 'Cant get accounts'})
     }
 };
+
+export const updatePayAccount= async (request, response) => {
+    try {
+        const id = request.params.id;
+        const data = request.body;
+
+        PayAccountModel.findOneAndUpdate({_id: id}, 
+            {...data}, {returnDocument: 'after'})
+            .then(result => {
+                if (!result) {
+                    return response.status(400).json({message: `Account not found`})
+                }
+
+                return response.status(200).json(result);
+        }) 
+
+    } catch(error) {
+        console.log(error);
+        response.status(500).json({message: 'Cant update account'})
+    }
+};

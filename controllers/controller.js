@@ -8,3 +8,4 @@ export * as TicketController from './TicketController.js';
 export * as LessonController from './LessonController.js';
 export * as PayTypeController from './PayAccountController.js';
 export * as SalaryController from './SalaryController.js';
+export * as ExpenseController from './ExpenseController.js'

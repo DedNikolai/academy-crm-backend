@@ -9,5 +9,6 @@ const router = express.Router({ mergeParams: true });
 
 router.post('/', checkAuth, checkRole(['OWNER']), PayAccount.payAccountValidation, handleValidationErros, PayTypeController.createPayAccount);
 router.get('/', checkAuth, checkRole(['OWNER', 'ADMIN']), PayTypeController.getPayAccounts);
+router.patch('/:id', checkAuth, checkRole(['OWNER']), PayAccount.payAccountValidation, handleValidationErros, PayTypeController.updatePayAccount);
 
 export default router;
