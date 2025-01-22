@@ -9,3 +9,4 @@ export * as Lesson from './lesson.js';
 export * as PayAccount from './payAccount.js';
 export * as Salary from './salary.js';
 export * as Expense from './expense.js';
+export * as StudentTime from './studentTime.js'

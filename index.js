@@ -14,6 +14,7 @@ import lesson from './routes/lesson.js';
 import payaccount from './routes/payAccount.js'
 import salary from './routes/salary.js';
 import expense from './routes/expense.js';
+import studentTime from './routes/studentTime.js'
  
 mongoose.connect(process.env.DB_URL)
     .then(() =>console.log("DB OK"))
@@ -42,7 +43,7 @@ app.use('/lesson', lesson);
 app.use('/payaccount', payaccount);
 app.use('/salary', salary);
 app.use('/expense', expense);
-
+app.use('/student-time', studentTime);
 
 app.listen(port, (err) => {
     if (err) {

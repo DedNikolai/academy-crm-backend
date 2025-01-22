@@ -48,7 +48,13 @@ const StudentSchema = mongoose.Schema({
     gender: {
         type: String,
         required: true
-    }
+    },
+
+    lessontimes: {
+        type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'StudentTime' }],
+        default: []
+    },
+
     },
     {
         timestamps: true

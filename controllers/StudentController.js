@@ -2,6 +2,7 @@ import TeacherModel from '../models/Teacher.js';
 import StudentModel from '../models/Student.js';
 import LessonModel from '../models/Lesson.js';
 import Ticketmodel from '../models/Ticket.js';
+import StudentTimeModel from '../models/StudentTime.js';
 
 export const createStudent = async (request, response) => {
     try {
@@ -84,6 +85,7 @@ export const deleteStudent = async (request, response) => {
         const deletad = await StudentModel.deleteOne({_id: id});
 
         if (deletad) {
+            await StudentTimeModel.deleteMany({student: id})
             return response.status(200).json({message: 'Student was deletad'})
         } else {
             return response.status(400).json({message: 'Student was not deleted'});
@@ -100,6 +102,14 @@ export const getStudentById = async (request, response) => {
         const id = request.params.id;
 
         const student = await StudentModel.findById(id)
+                                          .populate({
+                                            path: 'lessontimes', 
+                                            select: ['_id', 'day', 'startTime', 'duration', 'subject', 'student', 'room'],
+                                            populate: {
+                                                path: 'teacher',
+                                                select: ['_id', 'fullName']
+                                            },
+                                         })
                                           .populate({
                                             path: 'teachers', 
                                             select: ['_id', 'fullName', 'subjects']
@@ -123,10 +133,15 @@ export const getStudentsByTeacher = async (request, response) => {
         const students = await StudentModel.paginate({teachers: teacherId, isActive: true}, {
                                                page: +page + 1, 
                                                limit: limit,
-                                               populate:{
-                                                path: 'teachers',
-                                                select: ['_id', 'fullName', 'subjects']
-                                               }  
+                                               populate:[{
+                                                            path: 'teachers',
+                                                            select: ['_id', 'fullName', 'subjects']
+                                                        },
+                                                        {
+                                                            path: 'lessontimes', 
+                                                            select: ['_id', 'day', 'startTime', 'endTime']
+                                                        }
+                                                 ] 
                                             });
 
 
