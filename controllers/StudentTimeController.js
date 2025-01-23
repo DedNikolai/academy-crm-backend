@@ -32,12 +32,13 @@ export const createTime = async (request, response) => {
 };
 
 export const updateTime = async (request, response) => {
+
     try {
         const id = request.params.id;
         const time = request.body;
 
         StudentTimeModel.findOneAndUpdate({_id: id}, 
-            {time}, {returnDocument: 'after'})
+            {...time, room: time.room}, {returnDocument: 'after'})
             .then(result => {
                 if (!result) {
                     return response.status(400).json({message: `Time not found`})
@@ -72,3 +73,20 @@ export const deleteTime = async (request, response) => {
         response.status(500).json({message: 'Cant delete time'})
     }
 }
+
+export const getStudentTimeByTeacher = async (request, response) => {
+    try {
+        const id = request.params.id;
+
+        const lessons = await StudentTimeModel.find({teacher: id})
+                                            .populate({
+                                                path: 'student', 
+                                                select: ['_id', 'fullName'],
+                                            }).exec();;
+    
+        return response.status(200).json(lessons);
+    } catch(error) {
+        console.log(error);
+        response.status(500).json({message: 'Cant get lessons'})
+    }
+};

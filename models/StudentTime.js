@@ -39,7 +39,8 @@ const StudentTimeSchema = mongoose.Schema({
     },
 
     room: {
-        type: Number
+        type: Number,
+        default: 0
     }
 
     },
