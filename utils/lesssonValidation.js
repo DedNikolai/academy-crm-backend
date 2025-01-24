@@ -129,12 +129,15 @@ function teacherWorkTimeCheck(current, teacher) {
     if (workDays.length === 0) {
         return true;
     }
-
+    
     workDays.forEach(workDay => {
         const workDayStart = new Date(workDay.startTime).getHours()*60 + new Date(workDay.startTime).getMinutes();
         const workDayEnd = new Date(workDay.endTime).getHours()*60 + new Date(workDay.endTime).getMinutes();
         const currentStart = new Date(current.date).getHours()*60 + new Date(current.date).getMinutes();
         const currentEnd = currentStart + current.durationMinutes;
+        console.log(new Date(workDay.startTime).getHours())
+        console.log(new Date(workDay.endTime).getHours())
+        console.log(new Date(current.date).getHours())
 
         if (currentStart >= workDayStart && currentEnd <= workDayEnd) {
             result = false
