@@ -1,4 +1,3 @@
-import StudentModel from '../models/Student.js';
 import Ticketmodel from '../models/Ticket.js';
 import LessonModel from '../models/Lesson.js';
 import {LessonStatus} from '../constants/lesson-status.js';
