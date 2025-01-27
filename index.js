@@ -32,18 +32,18 @@ app.get("/", (req, res) => {
     res.send('Hello CRM')
 })
 
-app.use('/auth', auth);
-app.use('/roles', roles);
-app.use('/subject', subject);
-app.use('/teacher', teacher);
-app.use('/worktime', worktime);
-app.use('/student', student);
-app.use('/ticket', ticket);
-app.use('/lesson', lesson);
-app.use('/payaccount', payaccount);
-app.use('/salary', salary);
-app.use('/expense', expense);
-app.use('/student-time', studentTime);
+app.use('/api/auth', auth);
+app.use('/api/roles', roles);
+app.use('/api/subject', subject);
+app.use('/api/teacher', teacher);
+app.use('/api/worktime', worktime);
+app.use('/api/student', student);
+app.use('/api/ticket', ticket);
+app.use('/api/lesson', lesson);
+app.use('/api/payaccount', payaccount);
+app.use('/api/salary', salary);
+app.use('/api/expense', expense);
+app.use('/api/student-time', studentTime);
 
 app.listen(port, (err) => {
     if (err) {
