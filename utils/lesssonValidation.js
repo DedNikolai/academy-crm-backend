@@ -1,7 +1,7 @@
 import LessonModel from '../models/Lesson.js';
 import TeacherModel from '../models/Teacher.js';
 import TicketModel from '../models/Ticket.js';
-
+import {LessonStatus} from '../constants/lesson-status.js';
 
 export default async (req, res, next) => {
     const current = req.body;
@@ -12,7 +12,12 @@ export default async (req, res, next) => {
     end.setHours(25, 0, 0, 0);
 
     try {
-        const lessonsWithCurrentDate = await LessonModel.find({date:{$gt: start, $lt:end}, '_id': {$ne: current._id}});
+        const lessonsWithCurrentDate = await LessonModel.find({
+            date:{$gt: start, $lt:end}, 
+            status: {$in: ['', LessonStatus.SUCCESS]},
+            '_id': {$ne: current._id}},
+            
+        );
         const teacher = await TeacherModel.findById(current.teacher)
                                           .populate({
                                             path: 'worktimes',
@@ -135,9 +140,6 @@ function teacherWorkTimeCheck(current, teacher) {
         const workDayEnd = new Date(workDay.endTime).getHours()*60 + new Date(workDay.endTime).getMinutes();
         const currentStart = new Date(current.date).getHours()*60 + new Date(current.date).getMinutes();
         const currentEnd = currentStart + current.durationMinutes;
-        console.log(new Date(workDay.startTime).getHours())
-        console.log(new Date(workDay.endTime).getHours())
-        console.log(new Date(current.date).getHours())
 
         if (currentStart >= workDayStart && currentEnd <= workDayEnd) {
             result = false

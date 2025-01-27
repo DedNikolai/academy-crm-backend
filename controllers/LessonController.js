@@ -288,7 +288,7 @@ export const getLessonsByWeek = async (request, response) => {
         const end = week[6];
         start.setHours(0, 0, 0 ,0);
         end.setHours(25);
-        const lessons = await LessonModel.find({date:{$gt: start, $lt:end}})
+        const lessons = await LessonModel.find({date:{$gt: start, $lt:end}, status: {$in: ['', LessonStatus.SUCCESS]}})
                                             .populate({
                                                 path: 'teacher', 
                                                 select: ['_id', 'fullName', 'subjects']
